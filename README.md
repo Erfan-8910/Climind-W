@@ -1,4 +1,4 @@
-# Climind
+# Climind - Version 4.1.0
 
 The Ultra-Glassmorphic SPA Harmonizing Real-Time Meteorology with Deep Cognitive Focus.
 
