@@ -54,11 +54,10 @@
             color: var(--text-color);
             position: relative;
             transition: background 0.5s ease;
-            padding: 30px 12px 110px 12px; /* safe spacing for bottom nav */
+            padding: 30px 12px 110px 12px;
             overflow-x: hidden;
         }
 
-        /* Comfortable vertical centering on tall screens */
         @media (min-height: 700px) {
             body {
                 align-items: center;
@@ -88,13 +87,10 @@
             100% { transform: translate(-20px, 30px) scale(0.9); }
         }
 
-        /* ─── Swirling Color Atmosphere during Active Focus ─── */
+        /* ─── FIX: Optimized Animation for Mobile ─── */
         .focus-active .liquid-bg {
-            animation: rotateBg 40s infinite linear !important;
-        }
-        @keyframes rotateBg {
-            0% { transform: rotate(0deg) scale(1.15); }
-            100% { transform: rotate(360deg) scale(1.15); }
+            /* Removed rotation that caused layout breaking */
+            transform: scale(1.05); 
         }
         .focus-active .blob-1 {
             animation: focusBlob1 12s infinite alternate ease-in-out !important;
@@ -107,15 +103,15 @@
         }
         @keyframes focusBlob1 {
             0% { transform: translate(0, 0) scale(1.2); filter: blur(65px); }
-            100% { transform: translate(120px, 90px) scale(1.6); filter: blur(95px); }
+            100% { transform: translate(80px, 60px) scale(1.4); filter: blur(95px); }
         }
         @keyframes focusBlob2 {
             0% { transform: translate(0, 0) scale(1.3); filter: blur(55px); }
-            100% { transform: translate(-100px, -110px) scale(1.7); filter: blur(85px); }
+            100% { transform: translate(-70px, -80px) scale(1.5); filter: blur(85px); }
         }
         @keyframes focusBlob3 {
             0% { transform: translate(0, 0) scale(1.2); filter: blur(75px); }
-            100% { transform: translate(60px, -60px) scale(1.5); filter: blur(105px); }
+            100% { transform: translate(40px, -40px) scale(1.3); filter: blur(105px); }
         }
 
         #weather-canvas { 
@@ -130,7 +126,6 @@
             z-index: 10;
         }
 
-        /* --- Ultra Glassmorphism Card --- */
         .glass-card {
             background: var(--glass-bg);
             backdrop-filter: blur(40px) saturate(180%); -webkit-backdrop-filter: blur(40px) saturate(180%);
@@ -152,7 +147,6 @@
         .spinner { width: 45px; height: 45px; border: 4px solid rgba(255,255,255,0.15); border-top: 4px solid var(--text-color); border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
-        /* --- Landing Screen --- */
         .landing-screen { 
             padding: 40px 15px; 
             display: flex; 
@@ -176,7 +170,6 @@
         .circle-btn { width: 45px; height: 45px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; cursor: pointer; background: var(--text-color); color: var(--bg-base); transition: 0.3s; }
         .circle-btn:hover { transform: rotate(90deg); }
 
-        /* --- Tab View Systems --- */
         .app-view {
             display: none;
             animation: fadeInView 0.4s ease;
@@ -190,7 +183,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* --- Header --- */
         .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; margin-top: 5px; }
         .city-name { font-size: 1.8rem; font-weight: 800; line-height: 1.1; }
         .date-text { font-size: 0.85rem; opacity: 0.7; font-weight: 500; margin-top: 2px; }
@@ -204,7 +196,6 @@
         }
         .blur-btn:hover { background: var(--text-color); color: var(--bg-base); }
 
-        /* --- Floating Bottom Navigation Menu (3 Tabs) --- */
         .bottom-nav {
             position: fixed;
             bottom: 20px;
@@ -237,26 +228,16 @@
             width: 30%;
             text-align: center;
         }
-        .nav-item i {
-            font-size: 1.3rem;
-            transition: 0.2s;
-        }
-        .nav-item.active {
-            opacity: 1;
-            color: var(--blob-1);
-        }
-        .nav-item.active i {
-            transform: translateY(-2px);
-        }
+        .nav-item i { font-size: 1.3rem; transition: 0.2s; }
+        .nav-item.active { opacity: 1; color: var(--blob-1); }
+        .nav-item.active i { transform: translateY(-2px); }
 
-        /* --- Assistant Cards & Recommendations --- */
         .assistant-card { display: flex; flex-direction: column; gap: 14px; }
         .assistant-header { display: flex; align-items: center; gap: 12px; }
         .status-icon { width: 42px; height: 42px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.15)); }
         .assistant-body { border-top: 1px solid var(--glass-border); padding-top: 12px; font-size: 0.85rem; display: flex; flex-direction: column; gap: 8px; }
         .assistant-item { display: flex; align-items: center; gap: 8px; font-weight: 500; }
 
-        /* ─── Immersive Focus Room ─── */
         .tools-view-card {
             text-align: center;
             display: flex;
@@ -291,6 +272,7 @@
             letter-spacing: -1px;
             background: linear-gradient(135deg, var(--text-color) 30%, var(--blob-1));
             -webkit-background-clip: text;
+            -webkit-fill-color: transparent;
             -webkit-text-fill-color: transparent;
         }
         .timer-presets {
@@ -350,11 +332,8 @@
             justify-content: center;
             gap: 5px;
         }
-        .timer-main-btn:active, .timer-secondary-btn:active {
-            transform: scale(0.97);
-        }
+        .timer-main-btn:active, .timer-secondary-btn:active { transform: scale(0.97); }
 
-        /* Custom Input Timer styling */
         .custom-timer-row {
             display: flex;
             align-items: center;
@@ -382,7 +361,6 @@
             font-size: 0.9rem;
         }
 
-        /* --- Weather Dashboard Details --- */
         .main-card { text-align: center; padding: 25px 15px; }
         .weather-icon { font-size: 6rem; margin-bottom: 5px; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.15)); animation: float 6s ease-in-out infinite; }
         .temp-display { font-size: 4.8rem; font-weight: 800; line-height: 1; letter-spacing: -3px; margin-bottom: 2px; }
@@ -397,7 +375,6 @@
         
         .section-title { font-size: 0.8rem; opacity: 0.7; font-weight: 800; margin: 20px 0 10px 4px; text-transform: uppercase; letter-spacing: 1px; }
 
-        /* --- Hourly Forecast Horizontal List --- */
         .hourly-forecast-container {
             display: flex;
             gap: 12px;
@@ -425,7 +402,6 @@
         .hourly-icon { font-size: 1.8rem; color: var(--text-color); filter: drop-shadow(0 2px 5px rgba(0,0,0,0.1)); }
         .hourly-temp { font-size: 1.2rem; font-weight: 800; }
 
-        /* --- Daily Forecast List --- */
         .daily-item { 
             display: flex; 
             justify-content: space-between; 
@@ -456,18 +432,8 @@
         }
         .daily-temps { font-size: 0.85rem; font-weight: 700; text-align: right; width: 60px; }
 
-        /* ─── Premium Settings List ─── */
-        .settings-view {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        .settings-input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-bottom: 12px;
-        }
+        .settings-view { display: flex; flex-direction: column; gap: 15px; }
+        .settings-input-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
         .settings-label { font-size: 0.82rem; font-weight: 700; opacity: 0.8; text-transform: uppercase; margin-left: 2px; letter-spacing: 0.5px; }
         .settings-text-input {
             width: 100%;
@@ -482,7 +448,6 @@
         }
         .settings-text-input:focus { border-color: var(--blob-1); box-shadow: 0 0 10px rgba(0,210,255,0.15); }
         
-        /* Fixed Horizontal wrapped Theme Selection grid */
         .theme-grid { 
             display: flex; 
             flex-direction: row;
@@ -503,7 +468,6 @@
             transform: scale(1.12);
         }
 
-        /* Color custom pickers styling */
         .custom-theme-creator {
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--glass-border);
@@ -529,15 +493,12 @@
             cursor: pointer;
             background: none;
         }
-        .color-picker-item input[type="color"]::-webkit-color-swatch-wrapper {
-            padding: 0;
-        }
+        .color-picker-item input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
         .color-picker-item input[type="color"]::-webkit-color-swatch {
             border: 2px solid var(--glass-border);
             border-radius: 50%;
         }
 
-        /* Beautiful Premium Centered Glass Button */
         .save-btn {
             background: linear-gradient(135deg, var(--blob-1), var(--blob-2));
             color: #ffffff;
@@ -556,15 +517,9 @@
             justify-content: center;
             gap: 8px;
         }
-        .save-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 242, 254, 0.4);
-        }
-        .save-btn:active {
-            transform: translateY(0);
-        }
+        .save-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0, 242, 254, 0.4); }
+        .save-btn:active { transform: translateY(0); }
 
-        /* --- Center-aligned Premium GitHub Footer --- */
         a.github-footer, a.github-footer:visited, a.github-footer:hover, a.github-footer:active {
             text-decoration: none !important;
             color: var(--text-color) !important;
@@ -585,13 +540,8 @@
             margin-top: 25px;
             box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
         }
-        .github-footer:hover { 
-            transform: translateY(-2px); 
-            background: var(--card-hover);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
+        .github-footer:hover { transform: translateY(-2px); background: var(--card-hover); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
 
-        /* --- Modals --- */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); z-index: 100; display: none; flex-direction: column; align-items: center; justify-content: center; }
         .modal-overlay.active { display: flex; animation: fadeIn 0.2s ease; }
         .close-modal { position: absolute; top: 30px; right: 30px; font-size: 2.2rem; cursor: pointer; color: white; opacity: 0.8; }
@@ -613,10 +563,8 @@
     <canvas id="weather-canvas"></canvas>
     <div class="loader-overlay" id="loader"><div class="spinner"></div></div>
 
-    <!-- Global Audio Player for Ambient Soundtracks -->
     <audio id="focus-audio" loop></audio>
 
-    <!-- Onboarding -->
     <div class="modal-overlay" id="onboarding-modal">
         <div class="settings-content">
             <h1 style="margin-bottom:15px; font-size:1.8rem">Welcome</h1>
@@ -625,7 +573,6 @@
         </div>
     </div>
 
-    <!-- Floating Navigation Menu (3 Tabs) -->
     <div class="bottom-nav" id="app-nav" style="display: none;">
         <div class="nav-item active" onclick="switchView('weather')" id="nav-weather">
             <i class="fas fa-cloud-sun"></i>
@@ -642,7 +589,6 @@
     </div>
 
     <div class="app-container">
-        <!-- Landing / Welcome screen -->
         <div class="landing-screen" id="landing-page">
             <div class="landing-title">Weather</div>
             <div class="landing-subtitle">Assistant</div>
@@ -659,7 +605,6 @@
             </button>
         </div>
 
-        <!-- ── VIEW 1: Weather Dashboard ── -->
         <div class="app-view" id="view-weather">
             <div class="header">
                 <div>
@@ -673,7 +618,6 @@
                 </div>
             </div>
 
-            <!-- Assistant Recommendation Card -->
             <div class="glass-card assistant-card">
                 <div class="assistant-header">
                     <img src="https://cdn-icons-png.flaticon.com/512/4712/4712009.png" class="status-icon" alt="status">
@@ -682,17 +626,13 @@
                         <div id="status-message" style="font-size: 0.85rem; opacity: 0.9;">Analysing conditions...</div>
                     </div>
                 </div>
-                
-                <div class="assistant-body" id="assistant-tips">
-                    <!-- Dynamic weather clothing tips loaded here -->
-                </div>
+                <div class="assistant-body" id="assistant-tips"></div>
             </div>
 
             <div class="glass-card main-card">
                 <i class="fas fa-sun weather-icon" id="main-icon"></i>
                 <div class="temp-display" id="current-temp">--<span>°</span></div>
                 <div class="weather-desc" id="weather-desc">--</div>
-                
                 <div class="details-grid">
                     <div class="detail-item"><i class="fas fa-wind"></i><span id="wind-speed">--</span><small>Wind</small></div>
                     <div class="detail-item"><i class="fas fa-tint"></i><span id="humidity">--%</span><small>Humidity</small></div>
@@ -708,32 +648,25 @@
             <div class="daily-list" id="daily-list"></div>
         </div>
 
-        <!-- ── VIEW 2: Focus Mode ── -->
         <div class="app-view" id="view-focus">
             <h2 style="font-size: 1.5rem; font-weight:800; margin: 10px 0 15px 4px;">Focus Mode</h2>
-            
             <div class="glass-card tools-view-card">
                 <p style="font-size: 0.9rem; font-weight: 700; opacity: 0.7; text-transform: uppercase; margin-bottom: 15px;">Focus Session Timer</p>
-                
                 <div class="timer-circle-wrapper">
                     <div class="timer-circle">
                         <div id="timer-display">25:00</div>
                         <span id="timer-label" style="font-size: 0.78rem; opacity: 0.7; font-weight: 700; text-transform: uppercase; margin-top: 5px;">Work Session</span>
                     </div>
                 </div>
-
                 <div class="timer-presets">
                     <button class="timer-preset active-preset" id="preset-work" onclick="setTimerDuration(25, 'work')">Focus</button>
                     <button class="timer-preset" id="preset-short" onclick="setTimerDuration(5, 'short')">Short Break</button>
                     <button class="timer-preset" id="preset-long" onclick="setTimerDuration(15, 'long')">Long Break</button>
                 </div>
-
-                <!-- Custom minutes setter input -->
                 <div class="custom-timer-row">
                     <span>Set Custom Minutes:</span>
                     <input type="number" id="custom-minutes-input" min="1" max="180" value="25" oninput="setCustomTimer(this.value)">
                 </div>
-
                 <div class="timer-controls-row">
                     <button class="timer-main-btn" id="timer-toggle-btn" onclick="toggleTimer()"><i class="fas fa-play"></i> Start</button>
                     <button class="timer-secondary-btn" id="ambient-toggle" onclick="toggleMute()"><i class="fas fa-volume-up"></i> Sound</button>
@@ -742,7 +675,6 @@
             </div>
         </div>
 
-        <!-- ── VIEW 3: Settings & Personalization ── -->
         <div class="app-view" id="view-settings">
             <h2 style="font-size: 1.5rem; font-weight:800; margin: 10px 0 15px 4px;">Personalize</h2>
             <div class="glass-card settings-view">
@@ -750,26 +682,20 @@
                     <span class="settings-label">Your Name</span>
                     <input type="text" class="settings-text-input" id="settings-name" placeholder="John Doe">
                 </div>
-
                 <div class="settings-input-group">
                     <span class="settings-label">Color Theme</span>
                     <div class="theme-grid" id="settings-themes-grid"></div>
                 </div>
-
-                <!-- Focus Ambient Sound Track Preferences Selector -->
                 <div class="settings-input-group">
                     <span class="settings-label">Focus Ambient Sound</span>
                     <select class="settings-text-input" id="settings-focus-sound" onchange="updateFocusSoundPref(this.value)">
                         <option value="lofi">Lofi Girl (Live) 🎵</option>
                         <option value="none">No Sound (Silent)</option>
                     </select>
-                    <!-- Advert Warning Alert box -->
                     <div id="lofi-warning-notice" style="display: none; font-size: 0.75rem; color: #ff5858; font-weight: 700; margin-top: 6px; line-height: 1.4; text-align: left; background: rgba(231, 76, 60, 0.1); border: 1px solid rgba(231, 76, 60, 0.2); padding: 8px 12px; border-radius: 10px;">
                         ⚠️ Note: Lofi Girl Radio Live is a live internet stream and may occasionally contain radio advertisements.
                     </div>
                 </div>
-
-                <!-- Custom Color Theme Generator -->
                 <div class="settings-input-group" style="border-top: 1px solid var(--glass-border); padding-top: 15px; margin-top: 10px;">
                     <span class="settings-label">Create Custom Theme</span>
                     <div class="custom-theme-creator">
@@ -779,7 +705,6 @@
                             <div class="color-picker-item"><input type="color" id="picker-color-3" value="#a18cd1"><small>Blob 3</small></div>
                         </div>
                         <button class="timer-preset" style="max-width:210px; margin: 0 auto 15px auto;" onclick="generateCustomTheme()">Generate & Copy Code</button>
-                        
                         <div class="settings-input-group" style="margin-bottom:0px;">
                             <span class="settings-label" style="font-size:0.75rem; opacity:0.7;">Import Theme Code</span>
                             <div style="display: flex; gap: 8px;">
@@ -789,10 +714,7 @@
                         </div>
                     </div>
                 </div>
-
                 <button class="save-btn" onclick="saveSettings()"><i class="fas fa-check"></i> Save Changes</button>
-
-                <!-- Static Center-aligned Premium GitHub Link (Now safely inside Settings to prevent nav overlapping) -->
                 <a href="https://github.com/Erfan-8910/Weather-APP" target="_blank" class="github-footer" id="app-footer">
                     <i class="fab fa-github"></i>
                     <span>Erfan-8910</span>
@@ -801,14 +723,12 @@
         </div>
     </div>
 
-    <!-- Search Modal -->
     <div class="modal-overlay" id="search-modal">
         <div class="close-modal" onclick="closeSearchModal()">×</div>
         <input type="text" class="modal-input" id="modal-input" placeholder="Search City..." onkeypress="handleModalEnter(event)">
     </div>
 
     <script>
-        // ── Themes ──
         const themes = {
             smart:   { name: 'Smart',   colors: ['#4facfe', '#00f2fe', '#a18cd1'] },
             ocean:   { name: 'Ocean',   colors: ['#2E3192', '#1BFFFF', '#D9AFD9'] },
@@ -822,15 +742,15 @@
         };
 
         const weatherCodes = {
-            0:  { icon: 'fa-sun',             desc: 'Clear' },
-            1:  { icon: 'fa-cloud-sun',       desc: 'Mainly Clear' },
-            2:  { icon: 'fa-cloud',           desc: 'Partly Cloudy' },
-            3:  { icon: 'fa-cloud',           desc: 'Overcast' },
-            45: { icon: 'fa-smog',            desc: 'Fog' },
-            51: { icon: 'fa-cloud-rain',      desc: 'Drizzle' },
+            0:  { icon: 'fa-sun', desc: 'Clear' },
+            1:  { icon: 'fa-cloud-sun', desc: 'Mainly Clear' },
+            2:  { icon: 'fa-cloud', desc: 'Partly Cloudy' },
+            3:  { icon: 'fa-cloud', desc: 'Overcast' },
+            45: { icon: 'fa-smog', desc: 'Fog' },
+            51: { icon: 'fa-cloud-rain', desc: 'Drizzle' },
             61: { icon: 'fa-cloud-showers-heavy', desc: 'Rain' },
-            71: { icon: 'fa-snowflake',       desc: 'Snow' },
-            95: { icon: 'fa-bolt',            desc: 'Storm' }
+            71: { icon: 'fa-snowflake', desc: 'Snow' },
+            95: { icon: 'fa-bolt', desc: 'Storm' }
         };
 
         let user = { name: '', theme: 'smart', mode: 'dark' };
@@ -852,9 +772,9 @@
                 themes['custom'] = { name: 'Custom', colors: colors };
             }
 
-            if (sName)  user.name  = sName;
+            if (sName) user.name = sName;
             if (sTheme && themes[sTheme]) user.theme = sTheme;
-            if (sMode)  user.mode  = sMode;
+            if (sMode) user.mode = sMode;
 
             document.body.setAttribute('data-mode', user.mode);
             applyTheme(user.theme);
@@ -865,18 +785,12 @@
             } else {
                 document.getElementById('welcome-msg').innerText = `Welcome back, ${user.name}`;
                 document.getElementById('welcome-msg').style.display = 'block';
-                
                 if (sCity) {
                     try {
                         const coords = JSON.parse(sCity);
-                        if (coords && coords.latitude && coords.longitude) {
-                            fetchWeather(coords.name, coords);
-                        } else {
-                            fetchWeather(sCity);
-                        }
-                    } catch(e) {
-                        fetchWeather(sCity);
-                    }
+                        if (coords && coords.latitude && coords.longitude) fetchWeather(coords.name, coords);
+                        else fetchWeather(sCity);
+                    } catch(e) { fetchWeather(sCity); }
                 }
             }
         }
@@ -895,30 +809,19 @@
             document.documentElement.style.setProperty('--blob-3', colors[2]);
         }
 
-        // ─── Menu Navigation Logic (3 Tabs) ───
         function switchView(viewId) {
             document.querySelectorAll('.app-view').forEach(v => v.classList.remove('active-view'));
             document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-
             document.getElementById(`view-${viewId}`).classList.add('active-view');
             document.getElementById(`nav-${viewId}`).classList.add('active');
-            
-            if (viewId === 'settings') {
-                loadSettingsViewUI();
-            }
+            if (viewId === 'settings') loadSettingsViewUI();
         }
 
         function loadSettingsViewUI() {
             document.getElementById('settings-name').value = user.name;
             document.getElementById('settings-focus-sound').value = focusAudioSound;
-            
-            // Adjust Advert alert box on initial settings load
             const warning = document.getElementById('lofi-warning-notice');
-            if (focusAudioSound === 'lofi') {
-                warning.style.display = 'block';
-            } else {
-                warning.style.display = 'none';
-            }
+            warning.style.display = focusAudioSound === 'lofi' ? 'block' : 'none';
 
             const grid = document.getElementById('settings-themes-grid'); 
             grid.innerHTML = '';
@@ -926,109 +829,69 @@
                 const b = document.createElement('div');
                 b.className = `theme-bubble ${user.theme === k ? 'selected' : ''}`;
                 b.style.background = `linear-gradient(135deg, ${themes[k].colors[0]}, ${themes[k].colors[1]})`;
-                b.onclick = () => { 
-                    user.theme = k; 
-                    applyTheme(k); // Preview colors instantly
-                    loadSettingsViewUI(); // Re-render bubble outline highlights
-                };
+                b.onclick = () => { user.theme = k; applyTheme(k); loadSettingsViewUI(); };
                 grid.appendChild(b);
             });
         }
 
         function saveSettings() {
             const n = document.getElementById('settings-name').value.trim();
-            if (n) {
-                user.name = n;
-                localStorage.setItem('weather_name', n);
-            }
+            if (n) { user.name = n; localStorage.setItem('weather_name', n); }
             localStorage.setItem('weather_theme', user.theme);
             applyTheme(user.theme);
-            
             updateGreeting();
             alert("Settings saved!");
         }
 
-        // ─── Custom Theme Creation and Export ───
         function generateCustomTheme() {
             const c1 = document.getElementById('picker-color-1').value;
             const c2 = document.getElementById('picker-color-2').value;
             const c3 = document.getElementById('picker-color-3').value;
             const code = `${c1},${c2},${c3}`;
-            
             themes['custom'] = { name: 'Custom', colors: [c1, c2, c3] };
             user.theme = 'custom';
             applyTheme('custom');
-            
             localStorage.setItem('weather_custom_theme', code);
             localStorage.setItem('weather_theme', 'custom');
-            
             loadSettingsViewUI();
-            
-            navigator.clipboard.writeText(code).then(() => {
-                alert("Theme generated & copied to clipboard! Share code: " + code);
-            }).catch(() => {
-                alert("Theme generated: " + code);
-            });
+            navigator.clipboard.writeText(code).then(() => alert("Theme generated & copied to clipboard!"));
         }
 
         function importCustomTheme() {
             const code = document.getElementById('import-theme-input').value.trim();
             const regex = /^#([0-9a-fA-F]{3,6}),#([0-9a-fA-F]{3,6}),#([0-9a-fA-F]{3,6})$/;
-            if (!regex.test(code)) {
-                alert("Invalid format! Use: #color1,#color2,#color3");
-                return;
-            }
+            if (!regex.test(code)) return alert("Invalid format!");
             const colors = code.split(',');
-            
             themes['custom'] = { name: 'Custom', colors: colors };
             user.theme = 'custom';
             applyTheme('custom');
-            
             localStorage.setItem('weather_custom_theme', code);
             localStorage.setItem('weather_theme', 'custom');
-            
             loadSettingsViewUI();
-            alert("Theme imported and applied!");
+            alert("Theme imported!");
         }
 
-        // ── Weather & Air Quality API Fetch ──
         async function fetchWeather(city, coords = null) {
             document.getElementById('loader').style.display = 'flex';
             try {
                 let latitude, longitude, name;
-                
                 if (coords) {
-                    latitude = coords.latitude;
-                    longitude = coords.longitude;
-                    name = city;
+                    latitude = coords.latitude; longitude = coords.longitude; name = city;
                     localStorage.setItem('weather_city', JSON.stringify({ name, latitude, longitude }));
                 } else {
                     const geo = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1&language=en&format=json`).then(r=>r.json());
                     if (!geo.results?.length) throw new Error("City not found");
-                    latitude = geo.results[0].latitude;
-                    longitude = geo.results[0].longitude;
-                    name = geo.results[0].name;
+                    latitude = geo.results[0].latitude; longitude = geo.results[0].longitude; name = geo.results[0].name;
                     localStorage.setItem('weather_city', name);
                 }
-
                 const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true&hourly=temperature_2m,weathercode,relative_humidity_2m&daily=temperature_2m_max,temperature_2m_min,weathercode,sunrise,sunset,uv_index_max&timezone=auto`;
                 const aqiUrl = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${latitude}&longitude=${longitude}&current=us_aqi`;
-
-                const [weatherData, aqiData] = await Promise.all([
-                    fetch(weatherUrl).then(r=>r.json()),
-                    fetch(aqiUrl).then(r=>r.json()).catch(() => null)
-                ]);
-                
+                const [weatherData, aqiData] = await Promise.all([fetch(weatherUrl).then(r=>r.json()), fetch(aqiUrl).then(r=>r.json()).catch(() => null)]);
                 updateUI(weatherData, aqiData, name);
-                
                 document.getElementById('landing-page').style.display = 'none';
                 document.getElementById('app-nav').style.display = 'flex';
                 switchView('weather');
-            } catch(e) {
-                alert(e.message);
-            } finally {
-                document.getElementById('loader').style.display = 'none';
-            }
+            } catch(e) { alert(e.message); } finally { document.getElementById('loader').style.display = 'none'; }
         }
 
         function updateGreeting() {
@@ -1038,7 +901,6 @@
             else if (hour >= 12 && hour < 17) greeting = "Good Afternoon";
             else if (hour >= 17 && hour < 22) greeting = "Good Evening";
             else greeting = "Good Night";
-
             document.getElementById('greeting-title').innerText = `${greeting}, ${user.name || 'Friend'}!`;
         }
 
@@ -1047,194 +909,97 @@
             const day = data.daily;
             const wInfo = weatherCodes[cur.weathercode] || weatherCodes[0];
             const currentHour = new Date().getHours();
-            
             document.getElementById('city-name').innerText = name;
             document.getElementById('date-display').innerText = new Date().toLocaleDateString('en-US', {weekday:'short', day:'numeric', month:'short'});
-            
             document.getElementById('current-temp').innerHTML = `${Math.round(cur.temperature)}<span>°</span>`;
             document.getElementById('weather-desc').innerText = wInfo.desc;
             document.getElementById('main-icon').className = `fas ${wInfo.icon} weather-icon`;
-            
             document.getElementById('wind-speed').innerText = Math.round(cur.windspeed);
-            
             const hourlyHumidity = data.hourly.relative_humidity_2m || data.hourly.relativehumidity_2m;
-            const currentHumidity = hourlyHumidity ? hourlyHumidity[currentHour] : 50;
-            document.getElementById('humidity').innerText = `${currentHumidity}%`;
-            
+            document.getElementById('humidity').innerText = `${hourlyHumidity ? hourlyHumidity[currentHour] : 50}%`;
             const uvVal = day.uv_index_max ? Math.round(day.uv_index_max[0]) : 0;
             document.getElementById('uv-index').innerText = uvVal || '-';
-            
             if (day.sunset?.[0]) {
                 const sunset = new Date(day.sunset[0]);
                 document.getElementById('sunset-time').innerText = `${sunset.getHours()}:${String(sunset.getMinutes()).padStart(2,'0')}`;
             }
-
             updateGreeting();
             let msg = `Have an awesome day, ${user.name}`;
             if ([51,61,95].includes(cur.weathercode)) msg = `Grab your umbrella before leaving, ${user.name} ☔`;
-            else if (cur.temperature < 5)  msg = `It is quite cold today ❄️ Bundle up nicely!`;
+            else if (cur.temperature < 5) msg = `It is quite cold today ❄️ Bundle up nicely!`;
             else if (cur.temperature > 30) msg = `It is hot outside, ${user.name}! Stay safe 🥤`;
             document.getElementById('status-message').innerText = msg;
 
             const tipsContainer = document.getElementById('assistant-tips');
             tipsContainer.innerHTML = '';
-
-            let clothingTip = "👕 Light clothing is ideal for today's weather.";
-            if (cur.temperature < 12) clothingTip = "🧥 Make sure to wear a thick jacket or coat.";
-            else if (cur.temperature >= 12 && cur.temperature < 20) clothingTip = "🧥 A sweater or light jacket should be perfect.";
+            let clothingTip = cur.temperature < 12 ? "🧥 Wear a thick jacket." : (cur.temperature < 20 ? "🧥 A light jacket is perfect." : "👕 Light clothing is ideal.");
             tipsContainer.innerHTML += `<div class="assistant-item">${clothingTip}</div>`;
-
-            if (uvVal >= 3) {
-                tipsContainer.innerHTML += `<div class="assistant-item">🧴 Sunscreen is highly recommended today (UV: ${uvVal}).</div>`;
-            } else {
-                tipsContainer.innerHTML += `<div class="assistant-item">🕶️ Sunscreen optional. Wearing sunglasses is ideal.</div>`;
-            }
-
-            if (aqiData && aqiData.current) {
+            if (uvVal >= 3) tipsContainer.innerHTML += `<div class="assistant-item">🧴 Sunscreen recommended (UV: ${uvVal}).</div>`;
+            if (aqiData?.current) {
                 const aqi = aqiData.current.us_aqi;
-                let aqiStatus = "🍃 Good Air Quality";
-                if (aqi > 50 && aqi <= 100) aqiStatus = "⚠️ Moderate Air Quality";
-                else if (aqi > 100) aqiStatus = "🛑 Unhealthy Air - limit outdoor exposure";
+                let aqiStatus = aqi > 100 ? "🛑 Unhealthy Air" : (aqi > 50 ? "⚠️ Moderate Air" : "🍃 Good Air Quality");
                 tipsContainer.innerHTML += `<div class="assistant-item">${aqiStatus} (AQI: ${aqi})</div>`;
             }
-
             handleParticles([51,61,95].includes(cur.weathercode) ? 'rain' : (cur.weathercode===71 ? 'snow' : 'clear'));
-
-            // Safe Hourly list sequence
-            const hList = document.getElementById('hourly-list'); 
-            hList.innerHTML = '';
-            
+            const hList = document.getElementById('hourly-list'); hList.innerHTML = '';
             for (let offset = 0; offset < 24; offset += 2) {
                 const targetHour = currentHour + offset;
                 if (targetHour >= data.hourly.temperature_2m.length) break;
-
                 const temp = Math.round(data.hourly.temperature_2m[targetHour]);
                 const code = data.hourly.weathercode ? data.hourly.weathercode[targetHour] : 0;
                 const icon = (weatherCodes[code] || weatherCodes[0]).icon;
-
-                const displayHour = targetHour % 24;
-                const isTomorrow = targetHour >= 24;
-                const timeStr = (isTomorrow ? 'Tom ' : '') + String(displayHour).padStart(2, '0') + ':00';
-
-                hList.innerHTML += `
-                    <div class="hourly-card">
-                        <div class="hourly-time">${timeStr}</div>
-                        <i class="fas ${icon} hourly-icon"></i>
-                        <div class="hourly-temp">${temp}°</div>
-                    </div>`;
+                const timeStr = (targetHour >= 24 ? 'Tom ' : '') + String(targetHour % 24).padStart(2, '0') + ':00';
+                hList.innerHTML += `<div class="hourly-card"><div class="hourly-time">${timeStr}</div><i class="fas ${icon} hourly-icon"></i><div class="hourly-temp">${temp}°</div></div>`;
             }
-
-            // Daily Forecast (Shows next 6 days sequentially)
-            const dList = document.getElementById('daily-list'); 
-            dList.innerHTML = '';
+            const dList = document.getElementById('daily-list'); dList.innerHTML = '';
             for (let i = 1; i < 7; i++) {
-                const max = Math.round(day.temperature_2m_max[i]);
-                const min = Math.round(day.temperature_2m_min[i]);
-                const c   = day.weathercode[i];
+                const max = Math.round(day.temperature_2m_max[i]), min = Math.round(day.temperature_2m_min[i]);
                 const dName = new Date(new Date().setDate(new Date().getDate() + i)).toLocaleDateString('en-US', {weekday:'short'});
-                
-                dList.innerHTML += `
-                    <div class="daily-item">
-                        <span class="daily-day">${dName}</span>
-                        <div class="daily-icon-wrapper">
-                            <i class="fas ${(weatherCodes[c]||weatherCodes[0]).icon}"></i>
-                        </div>
-                        <div class="temp-bar-bg">
-                            <div class="temp-bar-fill" style="width: ${(max / (max + Math.abs(min))) * 100}%"></div>
-                        </div>
-                        <span class="daily-temps">${max}° <span style="font-weight:400; opacity:0.6">${min}°</span></span>
-                    </div>`;
+                dList.innerHTML += `<div class="daily-item"><span class="daily-day">${dName}</span><div class="daily-icon-wrapper"><i class="fas ${(weatherCodes[day.weathercode[i]]||weatherCodes[0]).icon}"></i></div><div class="temp-bar-bg"><div class="temp-bar-fill" style="width: ${(max / (max + Math.abs(min))) * 100}%"></div></div><span class="daily-temps">${max}° <span style="font-weight:400; opacity:0.6">${min}°</span></span></div>`;
             }
         }
 
-        // ─── Focus Mode & Audio Synth System ───
-        let timerInterval = null;
-        let timerSeconds = 1500; 
-        let timerRunning = false;
-        let timerMode = 'work'; // work, short, long
-        
-        let focusAudioSound = 'lofi'; 
-        let soundMuted = false;
+        let timerInterval = null, timerSeconds = 1500, timerRunning = false, timerMode = 'work';
+        let focusAudioSound = 'lofi', soundMuted = false;
 
         function loadFocusAudio() {
             const saved = localStorage.getItem('focus_sound_pref');
-            if (saved) {
-                focusAudioSound = saved;
-            }
+            if (saved) focusAudioSound = saved;
         }
 
         function updateFocusSoundPref(val) {
             focusAudioSound = val;
             localStorage.setItem('focus_sound_pref', val);
-            
-            // Manage warning notice visibility
-            const warning = document.getElementById('lofi-warning-notice');
-            if (val === 'lofi') {
-                warning.style.display = 'block';
-            } else {
-                warning.style.display = 'none';
-            }
-
-            if (timerRunning) {
-                stopAmbientNoise();
-                startAmbientNoise();
-            }
+            document.getElementById('lofi-warning-notice').style.display = val === 'lofi' ? 'block' : 'none';
+            if (timerRunning) { stopAmbientNoise(); startAmbientNoise(); }
         }
 
         function setTimerDuration(mins, mode) {
-            clearInterval(timerInterval);
-            timerRunning = false;
-            timerMode = mode;
-            timerSeconds = mins * 60;
-            updateTimerDisplay();
-            document.getElementById('timer-toggle-btn').innerHTML = '<i class="fas fa-play"></i> Start';
-            
-            document.body.classList.remove('focus-active');
-            stopAmbientNoise();
-
+            clearInterval(timerInterval); timerRunning = false; timerMode = mode; timerSeconds = mins * 60;
+            updateTimerDisplay(); document.getElementById('timer-toggle-btn').innerHTML = '<i class="fas fa-play"></i> Start';
+            document.body.classList.remove('focus-active'); stopAmbientNoise();
             document.querySelectorAll('.timer-preset').forEach(b => b.classList.remove('active-preset'));
-            document.getElementById(`preset-${mode}`).classList.add('active-preset');
-
-            const label = document.getElementById('timer-label');
-            if (mode === 'work') label.innerText = "Work Session";
-            else if (mode === 'short') label.innerText = "Short Break";
-            else label.innerText = "Long Break";
+            document.getElementById(`preset-${mode}`)?.classList.add('active-preset');
+            document.getElementById('timer-label').innerText = mode === 'work' ? "Work Session" : (mode === 'short' ? "Short Break" : "Long Break");
         }
 
-        function setCustomTimer(mins) {
-            const val = parseInt(mins, 10);
-            if (isNaN(val) || val < 1) return;
-            setTimerDuration(val, 'custom');
-        }
+        function setCustomTimer(mins) { const val = parseInt(mins, 10); if (!isNaN(val) && val > 0) setTimerDuration(val, 'custom'); }
 
         function toggleTimer() {
             if (timerRunning) {
-                clearInterval(timerInterval);
-                timerRunning = false;
+                clearInterval(timerInterval); timerRunning = false;
                 document.getElementById('timer-toggle-btn').innerHTML = '<i class="fas fa-play"></i> Start';
-                
-                document.body.classList.remove('focus-active');
-                stopAmbientNoise();
+                document.body.classList.remove('focus-active'); stopAmbientNoise();
             } else {
-                timerRunning = true;
-                document.getElementById('timer-toggle-btn').innerHTML = '<i class="fas fa-pause"></i> Pause';
-                
-                document.body.classList.add('focus-active');
-                startAmbientNoise();
-
+                timerRunning = true; document.getElementById('timer-toggle-btn').innerHTML = '<i class="fas fa-pause"></i> Pause';
+                document.body.classList.add('focus-active'); startAmbientNoise();
                 timerInterval = setInterval(() => {
-                    if (timerSeconds > 0) {
-                        timerSeconds--;
-                        updateTimerDisplay();
-                    } else {
-                        clearInterval(timerInterval);
-                        timerRunning = false;
+                    if (timerSeconds > 0) { timerSeconds--; updateTimerDisplay(); }
+                    else {
+                        clearInterval(timerInterval); timerRunning = false;
                         document.getElementById('timer-toggle-btn').innerHTML = '<i class="fas fa-play"></i> Start';
-                        
-                        document.body.classList.remove('focus-active');
-                        stopAmbientNoise();
-
-                        alert(timerMode === 'work' ? "Great job focusing! Time for a break. ☕" : "Break's over! Let's get back to work. 🎯");
+                        document.body.classList.remove('focus-active'); stopAmbientNoise();
+                        alert(timerMode === 'work' ? "Time for a break! ☕" : "Let's get back to work! 🎯");
                         playChimeSound();
                     }
                 }, 1000);
@@ -1242,102 +1007,56 @@
         }
 
         function resetTimer() {
-            clearInterval(timerInterval);
-            timerRunning = false;
+            clearInterval(timerInterval); timerRunning = false;
             timerSeconds = timerMode === 'work' ? 1500 : (timerMode === 'short' ? 300 : 900);
-            updateTimerDisplay();
-            document.getElementById('timer-toggle-btn').innerHTML = '<i class="fas fa-play"></i> Start';
-            
-            document.body.classList.remove('focus-active');
-            stopAmbientNoise();
+            updateTimerDisplay(); document.getElementById('timer-toggle-btn').innerHTML = '<i class="fas fa-play"></i> Start';
+            document.body.classList.remove('focus-active'); stopAmbientNoise();
         }
 
         function updateTimerDisplay() {
-            const m = Math.floor(timerSeconds / 60);
-            const s = timerSeconds % 60;
+            const m = Math.floor(timerSeconds / 60), s = timerSeconds % 60;
             document.getElementById('timer-display').innerText = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
         }
 
-        // ─── Play selected ambient music loop or natural birds/water ───
         function startAmbientNoise() {
-            if (soundMuted || !timerRunning) return;
+            if (soundMuted || !timerRunning || focusAudioSound === 'none') return;
             const audio = document.getElementById('focus-audio');
-            
-            let url = '';
-            if (focusAudioSound === 'lofi') {
-                url = 'https://play.streamafrica.net/lofiradio';
-            }
-            
-            if (!url) {
-                audio.pause();
-                return;
-            }
-            
-            if (audio.src !== url) {
-                audio.src = url;
-            }
-            
-            audio.play().catch(e => {
-                console.log("Audio playback blocked by browser policies: interaction required", e);
-            });
+            const url = 'https://play.streamafrica.net/lofiradio';
+            if (audio.src !== url) audio.src = url;
+            audio.play().catch(() => {});
         }
 
-        function stopAmbientNoise() {
-            const audio = document.getElementById('focus-audio');
-            audio.pause();
-        }
+        function stopAmbientNoise() { document.getElementById('focus-audio').pause(); }
 
         function toggleMute() {
             soundMuted = !soundMuted;
-            const btn = document.getElementById('ambient-toggle');
-            if (soundMuted) {
-                btn.innerHTML = '<i class="fas fa-volume-mute"></i> Muted';
-                stopAmbientNoise();
-            } else {
-                btn.innerHTML = '<i class="fas fa-volume-up"></i> Sound';
-                if (timerRunning) startAmbientNoise();
-            }
+            document.getElementById('ambient-toggle').innerHTML = soundMuted ? '<i class="fas fa-volume-mute"></i> Muted' : '<i class="fas fa-volume-up"></i> Sound';
+            if (soundMuted) stopAmbientNoise(); else if (timerRunning) startAmbientNoise();
         }
 
         function playChimeSound() {
             try {
                 const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                const notes = [523.25, 659.25, 783.99]; // C5, E5, G5 arpeggio
-                notes.forEach((freq, idx) => {
-                    const osc = ctx.createOscillator();
-                    const gain = ctx.createGain();
-                    osc.connect(gain);
-                    gain.connect(ctx.destination);
-                    osc.type = 'sine';
+                [523.25, 659.25, 783.99].forEach((freq, idx) => {
+                    const osc = ctx.createOscillator(), gain = ctx.createGain();
+                    osc.connect(gain); gain.connect(ctx.destination);
                     const now = ctx.currentTime + (idx * 0.12);
-                    osc.frequency.setValueAtTime(freq, now);
-                    gain.gain.setValueAtTime(0.1, now);
-                    gain.gain.linearRampToValueAtTime(0.001, now + 0.3);
-                    osc.start(now);
-                    osc.stop(now + 0.35);
+                    osc.frequency.setValueAtTime(freq, now); gain.gain.setValueAtTime(0.1, now);
+                    gain.gain.linearRampToValueAtTime(0.001, now + 0.3); osc.start(now); osc.stop(now + 0.35);
                 });
             } catch (e) {}
         }
 
-        // ── Utils ──
         function getLocation() {
             if (!navigator.geolocation) return alert("Geolocation not supported");
             document.getElementById('loader').style.display = 'flex';
-            navigator.geolocation.getCurrentPosition(
-                async (position) => {
-                    const lat = position.coords.latitude;
-                    const lon = position.coords.longitude;
-                    
-                    try {
-                        const revGeo = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`).then(r=>r.json());
-                        const cityName = revGeo.city || revGeo.locality || "Current Location";
-                        fetchWeather(cityName, { latitude: lat, longitude: lon });
-                    } catch (err) {
-                        fetchWeather("Your Location", { latitude: lat, longitude: lon });
-                    }
-                }, 
-                e => { document.getElementById('loader').style.display='none'; alert(e.message); }
-            );
+            navigator.geolocation.getCurrentPosition(async (pos) => {
+                const lat = pos.coords.latitude, lon = pos.coords.longitude;
+                try {
+                    const rev = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`).then(r=>r.json());
+                    fetchWeather(rev.city || "Current Location", { latitude: lat, longitude: lon });
+                } catch { fetchWeather("Location", { latitude: lat, longitude: lon }); }
+            }, e => { document.getElementById('loader').style.display='none'; alert(e.message); });
         }
 
         function handleStartEnter(e) { if (e.key === 'Enter') startApp(); }
@@ -1345,70 +1064,32 @@
         function startApp() { const c = document.getElementById('start-input').value.trim(); if (c) fetchWeather(c); }
         function finishOnboarding() { 
             const n = document.getElementById('onboard-name').value.trim();
-            if (n) { 
-                user.name = n; 
-                localStorage.setItem('weather_name', n); 
-                document.getElementById('onboarding-modal').classList.remove('active'); 
-                loadSession(); 
-            }
+            if (n) { user.name = n; localStorage.setItem('weather_name', n); document.getElementById('onboarding-modal').classList.remove('active'); loadSession(); }
         }
-        function openSearchModal(){ 
-            document.getElementById('search-modal').classList.add('active'); 
-            setTimeout(()=>document.getElementById('modal-input').focus(), 100);
-        }
+        function openSearchModal(){ document.getElementById('search-modal').classList.add('active'); setTimeout(()=>document.getElementById('modal-input').focus(), 100); }
         function closeSearchModal(){ document.getElementById('search-modal').classList.remove('active'); }
-        function closeSettings() { /* compatibility fallback */ }
 
-        // ── Canvas Particles ──
-        const canvas = document.getElementById('weather-canvas');
-        const ctx = canvas.getContext('2d');
+        const canvas = document.getElementById('weather-canvas'), ctx = canvas.getContext('2d');
         let particles = [], animId;
-
-        function resizeCanvas() { 
-            canvas.width = window.innerWidth; 
-            canvas.height = window.innerHeight; 
-        }
+        function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
         window.addEventListener('resize', resizeCanvas);
 
         function handleParticles(type) {
-            cancelAnimationFrame(animId); 
-            ctx.clearRect(0,0,canvas.width,canvas.height);
-            particles = []; 
-            canvas.style.display = 'none';
-            if (type !== 'rain' && type !== 'snow') return;
-            canvas.style.display = 'block';
-
-            for (let i = 0; i < 80; i++) {
-                particles.push({
-                    x: Math.random() * canvas.width, 
-                    y: Math.random() * canvas.height,
-                    speed: type === 'rain' ? Math.random()*15 + 10 : Math.random()*2 + 1,
-                    len:   type === 'rain' ? Math.random()*20 + 10 : Math.random()*5 + 2,
-                    type
-                });
-            }
+            cancelAnimationFrame(animId); ctx.clearRect(0,0,canvas.width,canvas.height);
+            particles = []; canvas.style.display = (type === 'rain' || type === 'snow') ? 'block' : 'none';
+            if (canvas.style.display === 'none') return;
+            for (let i = 0; i < 80; i++) particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, speed: type==='rain'? Math.random()*15+10 : Math.random()*2+1, len: type==='rain'? Math.random()*20+10 : Math.random()*5+2, type });
             loopParticles();
         }
 
         function loopParticles() {
             ctx.clearRect(0,0,canvas.width,canvas.height);
-            ctx.strokeStyle = ctx.fillStyle = document.body.getAttribute('data-mode') === 'light' 
-                ? "rgba(0,0,0,0.4)" 
-                : "rgba(255,255,255,0.4)";
-
+            ctx.strokeStyle = ctx.fillStyle = document.body.getAttribute('data-mode') === 'light' ? "rgba(0,0,0,0.4)" : "rgba(255,255,255,0.4)";
             particles.forEach(p => {
-                if (p.type === 'rain') {
-                    ctx.beginPath();
-                    ctx.moveTo(p.x, p.y);
-                    ctx.lineTo(p.x, p.y + p.len);
-                    ctx.stroke();
-                } else {
-                    ctx.beginPath();
-                    ctx.arc(p.x, p.y, p.len, 0, Math.PI*2);
-                    ctx.fill();
-                }
-                p.y += p.speed;
-                if (p.y > canvas.height) p.y = -20;
+                ctx.beginPath();
+                if (p.type === 'rain') { ctx.moveTo(p.x, p.y); ctx.lineTo(p.x, p.y + p.len); ctx.stroke(); }
+                else { ctx.arc(p.x, p.y, p.len, 0, Math.PI*2); ctx.fill(); }
+                p.y += p.speed; if (p.y > canvas.height) p.y = -20;
             });
             animId = requestAnimationFrame(loopParticles);
         }
