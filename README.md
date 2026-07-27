@@ -237,7 +237,7 @@ Your support drives every bug fix, every new feature, and every future version. 
 
 <div align="center">
 
-Built with ☁️ by **Erfan** · [GitHub](https://github.com/Erfan-8910) · [Live Demo](https://erfan.climind.pages.dev/)
+Built with ☁️ by **Erfan** and **Ai** · [GitHub](https://github.com/Erfan-8910) · [Live Demo](https://erfan.climind.pages.dev/)
 
 *Climind v5.0.0 — Weather, Focus & Toolbox*
 
