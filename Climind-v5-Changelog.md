@@ -4,7 +4,7 @@
 
 **From a Weather App to Your Daily Mindful Companion**
 
-[![Live Demo](https://img.shields.io/badge/🚀_Live_Demo-climind.pages.dev-4facfe?style=for-the-badge&logo=cloudflare)](https://erfan.climind.pages.dev/)
+[![Live Demo](https://img.shields.io/badge/🚀_Live_Demo-erfan.climind.pages.dev-4facfe?style=for-the-badge&logo=cloudflare)](https://erfan.climind.pages.dev/)
 [![GitHub Stars](https://img.shields.io/badge/⭐_Star_on_GitHub-Climind--W-181717?style=for-the-badge&logo=github)](https://github.com/Erfan-8910/Climind-W)
 
 </div>
