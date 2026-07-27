@@ -1,0 +1,2146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#08090d">
+    <title>Climind • Weather, Focus & Toolbox</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%98%81%EF%B8%8F%3C/text%3E%3C/svg%3E">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+<script>
+(function(){
+  function setCookie(k,v){
+    try{
+      var enc = encodeURIComponent(v);
+      var chunks = Math.ceil(enc.length/3500);
+      // SameSite=None;Secure so cookies survive when the app is embedded in a cross-site iframe (Lovable preview).
+      document.cookie = '__c_'+k+'__n='+chunks+';path=/;max-age=31536000;SameSite=None;Secure';
+      for(var i=0;i<chunks;i++){
+        document.cookie = '__c_'+k+'__'+i+'='+enc.substr(i*3500,3500)+';path=/;max-age=31536000;SameSite=None;Secure';
+      }
+    }catch(e){}
+  }
+  function getCookie(k){
+    try{
+      var m = document.cookie.match(new RegExp('(?:^|; )__c_'+k+'__n=(\\d+)'));
+      if(!m) return null;
+      var n = parseInt(m[1],10); var out='';
+      for(var i=0;i<n;i++){
+        var mm = document.cookie.match(new RegExp('(?:^|; )__c_'+k+'__'+i+'=([^;]*)'));
+        if(!mm) return null;
+        out += mm[1];
+      }
+      return decodeURIComponent(out);
+    }catch(e){return null;}
+  }
+  function delCookie(k){
+    var m = document.cookie.match(new RegExp('(?:^|; )__c_'+k+'__n=(\\d+)'));
+    if(m){var n=parseInt(m[1],10); for(var i=0;i<n;i++){document.cookie='__c_'+k+'__'+i+'=;path=/;max-age=0;SameSite=None;Secure';}}
+    document.cookie='__c_'+k+'__n=;path=/;max-age=0;SameSite=None;Secure';
+  }
+  var mem = {};
+  var _orig = null;
+  try { _orig = window.localStorage; } catch(e){}
+  // Preload from real localStorage first (survives refresh within same partition).
+  try {
+    if (_orig) {
+      for (var i=0; i<_orig.length; i++){
+        var kk = _orig.key(i);
+        if (kk) mem[kk] = _orig.getItem(kk);
+      }
+    }
+  } catch(e){}
+  // Then overlay from cookies (survives when localStorage is partitioned away).
+  try{
+    document.cookie.split('; ').forEach(function(c){
+      var mm = c.match(/^__c_(.+)__n=(\d+)$/);
+      if(mm){ var v = getCookie(mm[1]); if(v!==null) mem[mm[1]] = v; }
+    });
+  }catch(e){}
+  var shim = {
+    getItem:function(k){ return (k in mem)? mem[k] : null; },
+    setItem:function(k,v){ mem[k]=String(v); setCookie(k, String(v)); try{_orig && _orig.setItem(k,v);}catch(e){} },
+    removeItem:function(k){ delete mem[k]; delCookie(k); try{_orig && _orig.removeItem(k);}catch(e){} },
+    clear:function(){ Object.keys(mem).forEach(function(k){delCookie(k);}); mem={}; try{_orig && _orig.clear();}catch(e){} },
+    key:function(i){ return Object.keys(mem)[i]||null; },
+    get length(){ return Object.keys(mem).length; }
+  };
+  try{ Object.defineProperty(window,'localStorage',{configurable:true,get:function(){return shim;}}); }catch(e){ window.localStorage = shim; }
+
+})();
+</script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&family=Outfit:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --text-color: #ffffff;
+            --text-soft: rgba(255,255,255,0.72);
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-strong: rgba(255,255,255,0.09);
+            --glass-border: rgba(255, 255, 255, 0.12);
+            --card-hover: rgba(255, 255, 255, 0.12);
+            --input-bg: rgba(255, 255, 255, 0.08);
+            --blob-1: #4facfe;
+            --blob-2: #00f2fe;
+            --blob-3: #a18cd1;
+            --bg-base: #08090d;
+            --accent-glow: 0 0 30px color-mix(in srgb, var(--blob-1) 40%, transparent);
+        }
+        [data-mode="light"] {
+            --text-color: #14192a;
+            --text-soft: rgba(20,25,42,0.7);
+            --glass-bg: rgba(255, 255, 255, 0.55);
+            --glass-strong: rgba(255,255,255,0.7);
+            --glass-border: rgba(255, 255, 255, 0.7);
+            --card-hover: rgba(255, 255, 255, 0.8);
+            --input-bg: rgba(0, 0, 0, 0.04);
+            --bg-base: #eef2f7;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; outline: none; -webkit-tap-highlight-color: transparent; }
+        ::-webkit-scrollbar { display: none; }
+        * { -ms-overflow-style: none; scrollbar-width: none; }
+
+        body {
+            background: var(--bg-base);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            color: var(--text-color);
+            position: relative;
+            transition: background 0.8s ease, color 0.4s ease;
+            padding: 20px 12px 110px 12px;
+            overflow-x: hidden;
+        }
+        @media (min-height: 780px) { body { align-items: center; } }
+
+        
+        :root { --app-font-scale: 1; }
+        html { font-size: calc(16px * var(--app-font-scale)); }
+        [dir="rtl"] * { font-family: 'Vazirmatn', 'Outfit', sans-serif !important; }
+        /* Extra background effect: mesh */
+        body[data-bgfx="mesh"] .liquid-bg::before {
+          content:""; position:absolute; inset:0;
+          background:
+            radial-gradient(at 20% 20%, color-mix(in srgb, var(--blob-1) 60%, transparent), transparent 40%),
+            radial-gradient(at 80% 30%, color-mix(in srgb, var(--blob-2) 60%, transparent), transparent 45%),
+            radial-gradient(at 50% 80%, color-mix(in srgb, var(--blob-3) 60%, transparent), transparent 50%);
+          filter: blur(60px); animation: meshShift 18s ease-in-out infinite alternate;
+        }
+        @keyframes meshShift { 0%{transform:scale(1) translate(0,0)} 100%{transform:scale(1.15) translate(20px,-20px)} }
+        body[data-bgfx="waves"] .liquid-bg { background:
+          repeating-linear-gradient(45deg, transparent 0 40px, color-mix(in srgb, var(--blob-1) 8%, transparent) 40px 80px);
+        }
+        body[data-bgfx="grid"] .liquid-bg::after {
+          content:""; position:absolute; inset:0;
+          background-image:
+            linear-gradient(color-mix(in srgb, var(--blob-1) 22%, transparent) 1px, transparent 1px),
+            linear-gradient(90deg, color-mix(in srgb, var(--blob-1) 22%, transparent) 1px, transparent 1px);
+          background-size: 44px 44px; mask-image: radial-gradient(circle at 50% 50%, black 40%, transparent 75%);
+        }
+        body[data-bgfx="none"] .blob { display:none; }
+        .saved-city-chip { display:inline-flex; align-items:center; gap:6px; padding:6px 12px; margin:4px 4px 0 0;
+          border-radius:999px; background:var(--glass-bg); border:1px solid var(--glass-border); font-size:0.78rem; font-weight:600; cursor:pointer; }
+        .saved-city-chip .x { opacity:0.5; margin-left:4px; }
+        .saved-city-chip:hover { background:var(--card-hover); }
+
+        /* ---------- Backgrounds ---------- */
+        .liquid-bg { position: fixed; inset: 0; overflow: hidden; z-index: 0; pointer-events: none; transition: transform 1s ease; }
+        .blob {
+            position: absolute; border-radius: 50%;
+            filter: blur(80px); opacity: 0.55;
+            animation: moveBlob 25s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
+            transition: background 0.8s ease;
+            will-change: transform;
+        }
+        .blob-1 { width: 350px; height: 350px; background: var(--blob-1); top: -5%; left: -10%; }
+        .blob-2 { width: 300px; height: 300px; background: var(--blob-2); bottom: -5%; right: -10%; animation-delay: -5s; }
+        .blob-3 { width: 250px; height: 250px; background: var(--blob-3); top: 40%; left: 10%; animation-delay: -10s; }
+        @keyframes moveBlob {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(40px, -40px) scale(1.15); }
+            100% { transform: translate(-20px, 30px) scale(0.9); }
+        }
+        .focus-active .liquid-bg { transform: scale(1.05); }
+        .focus-active .blob { animation-duration: 14s !important; filter: blur(95px); }
+
+        #weather-canvas, #stars-canvas {
+            position: fixed; inset: 0; width: 100%; height: 100%;
+            z-index: 1; pointer-events: none;
+        }
+        #weather-canvas { display: none; }
+        #stars-canvas { display: none; opacity: 0.9; }
+
+        .app-container { width: 100%; max-width: 460px; position: relative; z-index: 10; }
+
+        /* ---------- Glass ---------- */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(40px) saturate(180%);
+            -webkit-backdrop-filter: blur(40px) saturate(180%);
+            border: 1px solid var(--glass-border);
+            border-radius: 28px; padding: 22px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.14), inset 0 1px 1px rgba(255, 255, 255, 0.12);
+            margin-bottom: 16px;
+            transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease;
+        }
+        .glass-card:active { transform: scale(0.99); }
+
+        /* ---------- Quote bar ---------- */
+        .quote-bar {
+            display: flex; align-items: center; gap: 10px;
+            padding: 10px 14px; margin-bottom: 12px;
+            background: var(--glass-bg); border: 1px solid var(--glass-border);
+            border-radius: 18px; font-size: 0.82rem; line-height: 1.35;
+            font-weight: 500; font-style: italic;
+            backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+            animation: fadeInDown 0.6s ease;
+        }
+        .quote-bar i { font-size: 0.85rem; opacity: 0.7; }
+        .quote-bar .quote-text { flex: 1; }
+        .quote-bar .quote-author { display: block; font-style: normal; font-weight: 700; font-size: 0.72rem; opacity: 0.7; margin-top: 2px; }
+        .quote-close { cursor: pointer; opacity: 0.6; padding: 4px; }
+        .quote-close:hover { opacity: 1; }
+
+        /* ---------- Loader ---------- */
+        .loader-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            z-index: 100; display: none; justify-content: center; align-items: center;
+        }
+        .spinner { width: 46px; height: 46px; border: 3px solid rgba(255,255,255,0.15); border-top: 3px solid var(--blob-1); border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* ---------- Toast ---------- */
+        .toast-stack { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 200; display: flex; flex-direction: column; gap: 8px; max-width: 92%; }
+        .toast {
+            background: var(--glass-strong); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+            border: 1px solid var(--glass-border); color: var(--text-color);
+            padding: 12px 18px; border-radius: 16px; font-size: 0.88rem; font-weight: 600;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+            animation: slideDown 0.35s cubic-bezier(0.2,0.8,0.2,1);
+            display: flex; align-items: center; gap: 10px;
+        }
+        .toast.success { border-left: 3px solid #22c55e; }
+        .toast.error { border-left: 3px solid #ef4444; }
+        .toast.info { border-left: 3px solid var(--blob-1); }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-16px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ---------- Landing ---------- */
+        .landing-screen {
+            padding: 30px 15px; display: flex; flex-direction: column;
+            align-items: center; text-align: center;
+            min-height: 82vh; justify-content: center; gap: 6px;
+        }
+        .landing-badge {
+            font-size: 0.72rem; letter-spacing: 3px; text-transform: uppercase;
+            padding: 6px 14px; border-radius: 999px; opacity: 0.85; font-weight: 700;
+            background: var(--glass-bg); border: 1px solid var(--glass-border);
+            backdrop-filter: blur(20px); margin-bottom: 12px;
+            animation: fadeInDown 0.7s ease;
+        }
+        .landing-title {
+            font-size: 3.6rem; font-weight: 800; letter-spacing: -2.5px; line-height: 1;
+            background: linear-gradient(135deg, var(--text-color), var(--blob-1) 60%, var(--blob-2));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text; color: transparent;
+            animation: fadeInDown 0.8s ease;
+        }
+        .landing-subtitle { font-size: 1.5rem; font-weight: 300; opacity: 0.75; margin-bottom: 22px; animation: fadeInDown 0.9s ease; }
+        #welcome-msg { margin-bottom: 18px; font-weight: 600; font-size: 1rem; opacity: 0.85; display: none; animation: fadeInDown 1s ease; }
+
+        .search-wrapper {
+            background: var(--glass-bg); border: 1px solid var(--glass-border);
+            backdrop-filter: blur(20px); border-radius: 50px; padding: 8px 12px;
+            display: flex; align-items: center; width: 100%;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+            transition: 0.3s;
+        }
+        .search-wrapper:focus-within { transform: scale(1.03); background: var(--card-hover); box-shadow: var(--accent-glow); }
+        .landing-input { border: none; background: transparent; color: var(--text-color); font-size: 1.05rem; flex: 1; margin-left: 12px; font-weight: 500; }
+        .landing-input::placeholder { color: var(--text-soft); }
+        .circle-btn { width: 45px; height: 45px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; font-size: 1.05rem; cursor: pointer; background: var(--text-color); color: var(--bg-base); transition: 0.3s; }
+        .circle-btn:hover { transform: rotate(90deg) scale(1.05); }
+
+        /* ---------- App view ---------- */
+        .app-view { display: none; animation: fadeInView 0.4s ease; }
+        .app-view.active-view { display: flex; flex-direction: column; }
+        @keyframes fadeInView { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; margin-top: 4px; gap: 8px; }
+        .city-name { font-size: 1.75rem; font-weight: 800; line-height: 1.1; }
+        .date-text { font-size: 0.82rem; opacity: 0.7; font-weight: 500; margin-top: 2px; }
+        .header-actions { display: flex; gap: 8px; flex-wrap: nowrap; }
+
+        .blur-btn {
+            width: 40px; height: 40px; border-radius: 12px;
+            background: var(--glass-bg); border: 1px solid var(--glass-border);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; color: var(--text-color); transition: 0.2s;
+            backdrop-filter: blur(20px);
+        }
+        .blur-btn:hover { background: var(--text-color); color: var(--bg-base); }
+        .blur-btn.pill { width: auto; padding: 0 14px; gap: 6px; font-size: 0.8rem; font-weight: 700; }
+
+        /* ---------- Bottom nav ---------- */
+        .bottom-nav {
+            position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%);
+            width: calc(100% - 24px); max-width: 460px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(40px) saturate(180%); -webkit-backdrop-filter: blur(40px) saturate(180%);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            display: flex; justify-content: space-around; padding: 12px 0;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.24), inset 0 1px 1px rgba(255, 255, 255, 0.15);
+            z-index: 95;
+        }
+        .nav-item {
+            display: flex; flex-direction: column; align-items: center; gap: 4px;
+            color: var(--text-color); opacity: 0.5; font-size: 0.72rem; font-weight: 700;
+            cursor: pointer; transition: 0.2s; flex: 1; text-align: center;
+        }
+        .nav-item i { font-size: 1.25rem; transition: 0.2s; }
+        .nav-item.active { opacity: 1; color: var(--blob-1); }
+        .nav-item.active i { transform: translateY(-2px) scale(1.08); }
+
+        /* ---------- Assistant ---------- */
+        .assistant-card { display: flex; flex-direction: column; gap: 12px; }
+        .assistant-header { display: flex; align-items: center; gap: 12px; }
+        .status-emoji { width: 44px; height: 44px; display:flex; align-items:center; justify-content:center; font-size: 2rem; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2)); }
+        .assistant-body { border-top: 1px solid var(--glass-border); padding-top: 12px; font-size: 0.85rem; display: flex; flex-direction: column; gap: 8px; }
+        .assistant-item { display: flex; align-items: center; gap: 8px; font-weight: 500; }
+
+        /* ---------- Main card ---------- */
+        .main-card { text-align: center; padding: 22px 15px; position: relative; overflow: hidden; }
+        .weather-icon { font-size: 5.6rem; margin-bottom: 6px; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.15)); animation: float 6s ease-in-out infinite; }
+        .temp-display { font-size: 4.8rem; font-weight: 800; line-height: 1; letter-spacing: -3px; margin-bottom: 2px; }
+        .temp-display span { font-size: 2rem; vertical-align: top; font-weight: 400; }
+        .weather-desc { font-size: 1.15rem; font-weight: 600; opacity: 0.95; margin-bottom: 18px; }
+        .feels-like { font-size: 0.8rem; opacity: 0.65; font-weight: 600; margin-top: -4px; margin-bottom: 14px; }
+
+        .details-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; padding-top: 14px; border-top: 1px solid var(--glass-border); }
+        .detail-item { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .detail-item i { font-size: 1.05rem; opacity: 0.8; }
+        .detail-item span { font-weight: 700; font-size: 0.85rem; }
+        .detail-item small { font-size: 0.62rem; opacity: 0.7; font-weight: 600; text-transform: uppercase; }
+
+        .section-title { font-size: 0.78rem; opacity: 0.7; font-weight: 800; margin: 18px 0 10px 4px; text-transform: uppercase; letter-spacing: 1.2px; display: flex; align-items: center; gap: 8px; }
+        .section-title i { font-size: 0.85rem; }
+
+        .hourly-forecast-container {
+            display: flex; gap: 12px; overflow-x: auto;
+            padding: 10px 2px 20px 2px; margin: 0 -10px;
+            scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;
+        }
+        .hourly-card {
+            flex: 0 0 92px; min-height: 140px;
+            background: var(--glass-bg); border: 1px solid var(--glass-border);
+            border-radius: 20px; padding: 14px 0;
+            display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+            scroll-snap-align: start; transition: 0.2s;
+        }
+        .hourly-card:hover { background: var(--card-hover); transform: translateY(-2px); }
+        .hourly-time { font-size: 0.78rem; opacity: 0.8; font-weight: 600; }
+        .hourly-icon { font-size: 1.7rem; color: var(--text-color); filter: drop-shadow(0 2px 5px rgba(0,0,0,0.1)); }
+        .hourly-temp { font-size: 1.15rem; font-weight: 800; }
+
+        .daily-item {
+            display: flex; justify-content: space-between; align-items: center;
+            background: var(--glass-bg); padding: 13px 16px;
+            border-radius: 18px; margin-bottom: 8px; border: 1px solid var(--glass-border);
+        }
+        .daily-day { width: 50px; font-weight: 600; font-size: 0.9rem; }
+        .daily-icon-wrapper { width: 30px; text-align: center; }
+        .daily-icon-wrapper i { font-size: 1.05rem; }
+        .temp-bar-bg { flex: 1; height: 5px; background: rgba(255, 255, 255, 0.08); border-radius: 3px; margin: 0 12px; overflow: hidden; position: relative; }
+        .temp-bar-fill { position: absolute; top: 0; height: 100%; background: linear-gradient(90deg, var(--blob-1), var(--blob-2)); border-radius: 3px; }
+        .daily-temps { font-size: 0.85rem; font-weight: 700; text-align: right; width: 65px; }
+        .daily-temps small { font-weight: 400; opacity: 0.6; }
+
+        /* ---------- Focus ---------- */
+        .tools-view-card { text-align: center; display: flex; flex-direction: column; align-items: center; padding: 30px 20px; }
+        .timer-circle-wrapper { position: relative; margin: 10px 0 22px 0; width: 190px; height: 190px; display: flex; justify-content: center; align-items: center; }
+        .timer-ring { position: absolute; inset: 0; }
+        .timer-ring circle { fill: none; stroke-width: 6; }
+        .timer-ring .ring-bg { stroke: rgba(255,255,255,0.08); }
+        .timer-ring .ring-fg { stroke: url(#ringGradient); stroke-linecap: round; transition: stroke-dashoffset 0.5s linear; transform: rotate(-90deg); transform-origin: center; }
+        .timer-circle {
+            width: 78%; height: 78%;
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid rgba(255, 255, 255, 0.12);
+            border-radius: 50%;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.12), inset 0 1px 1px rgba(255,255,255,0.1);
+        }
+        #timer-display {
+            font-size: 2.4rem; font-weight: 800; letter-spacing: -1px;
+            background: linear-gradient(135deg, var(--text-color) 30%, var(--blob-1));
+            -webkit-background-clip: text; background-clip: text;
+            -webkit-text-fill-color: transparent; color: transparent;
+        }
+        .timer-presets { display: flex; gap: 8px; margin-bottom: 14px; width: 100%; }
+        .timer-preset {
+            flex: 1; padding: 11px 5px; font-size: 0.76rem; font-weight: 700;
+            border-radius: 14px; background: var(--glass-bg); border: 1px solid var(--glass-border);
+            color: var(--text-color); cursor: pointer; transition: all 0.2s ease;
+        }
+        .timer-preset.active-preset {
+            background: linear-gradient(135deg, var(--blob-1), var(--blob-2));
+            color: #fff; border-color: transparent;
+            box-shadow: 0 4px 15px color-mix(in srgb, var(--blob-1) 45%, transparent);
+        }
+        .timer-controls-row { display: flex; gap: 10px; width: 100%; }
+        .timer-main-btn { flex: 2; padding: 14px; font-size: 0.9rem; font-weight: 700; border-radius: 14px; background: var(--text-color); color: var(--bg-base); border: none; cursor: pointer; transition: 0.2s; }
+        .timer-secondary-btn { flex: 1; padding: 14px; font-size: 0.85rem; font-weight: 700; border-radius: 14px; background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--text-color); cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 5px; }
+        .timer-main-btn:active, .timer-secondary-btn:active { transform: scale(0.97); }
+
+        .custom-timer-row {
+            display: flex; align-items: center; justify-content: space-between; width: 100%;
+            background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border);
+            padding: 10px 14px; border-radius: 16px; margin-bottom: 18px;
+            font-size: 0.78rem; font-weight: 700; text-transform: uppercase; opacity: 0.9;
+        }
+        #custom-minutes-input {
+            width: 65px; background: var(--input-bg); border: 1px solid var(--glass-border);
+            color: var(--text-color); border-radius: 10px; padding: 6px 10px;
+            text-align: center; font-weight: 800; font-size: 0.9rem;
+        }
+        .session-counter {
+            margin-top: 12px; font-size: 0.75rem; opacity: 0.7; font-weight: 600;
+            display: flex; gap: 4px; justify-content: center; align-items: center;
+        }
+        .session-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.15); }
+        .session-dot.done { background: var(--blob-1); box-shadow: 0 0 8px var(--blob-1); }
+
+        /* ---------- Toolbox ---------- */
+        .tools-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .tool-tile {
+            background: var(--glass-bg); border: 1px solid var(--glass-border);
+            border-radius: 22px; padding: 18px; cursor: pointer;
+            display: flex; flex-direction: column; gap: 8px;
+            transition: all 0.25s ease;
+            backdrop-filter: blur(20px);
+        }
+        .tool-tile:hover { transform: translateY(-3px); background: var(--card-hover); box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
+        .tool-tile .tile-icon {
+            width: 42px; height: 42px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center; font-size: 1.15rem;
+            background: linear-gradient(135deg, var(--blob-1), var(--blob-2));
+            color: #fff;
+        }
+        .tool-tile .tile-title { font-weight: 800; font-size: 0.95rem; }
+        .tool-tile .tile-desc { font-size: 0.72rem; opacity: 0.65; font-weight: 500; line-height: 1.35; }
+
+        .tool-panel { display: none; }
+        .tool-panel.active { display: block; animation: fadeInView 0.35s ease; }
+        .back-row { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+        .back-btn { background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--text-color); border-radius: 12px; padding: 8px 12px; font-weight: 700; font-size: 0.8rem; cursor: pointer; display:flex; align-items:center; gap:6px; }
+
+        /* Notes */
+        .note-add {
+            display: flex; gap: 8px; margin-bottom: 12px;
+        }
+        .note-add input {
+            flex: 1; background: var(--input-bg); border: 1px solid var(--glass-border);
+            color: var(--text-color); padding: 12px 14px; border-radius: 14px;
+            font-size: 0.9rem; font-weight: 500;
+        }
+        .note-add button { padding: 0 16px; border: none; border-radius: 14px; background: linear-gradient(135deg, var(--blob-1), var(--blob-2)); color:#fff; font-weight:700; cursor:pointer; }
+        .note-item {
+            background: var(--glass-bg); border: 1px solid var(--glass-border);
+            padding: 12px 14px; border-radius: 14px; margin-bottom: 8px;
+            display: flex; align-items: center; gap: 10px; font-size: 0.9rem;
+        }
+        .note-item.done { opacity: 0.5; text-decoration: line-through; }
+        .note-check { cursor: pointer; width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--glass-border); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .note-check.checked { background: var(--blob-1); border-color: var(--blob-1); color:#fff; }
+        .note-item .note-text { flex: 1; word-break: break-word; }
+        .note-del { cursor: pointer; opacity: 0.5; padding: 4px; }
+        .note-del:hover { opacity: 1; color: #ef4444; }
+
+        /* World clock */
+        .clock-item {
+            display: flex; justify-content: space-between; align-items: center;
+            background: var(--glass-bg); border: 1px solid var(--glass-border);
+            padding: 14px 16px; border-radius: 16px; margin-bottom: 8px;
+        }
+        .clock-city { font-weight: 700; font-size: 0.95rem; }
+        .clock-tz { font-size: 0.7rem; opacity: 0.6; margin-top: 2px; }
+        .clock-time { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.5px; font-variant-numeric: tabular-nums; }
+        .clock-date { font-size: 0.7rem; opacity: 0.6; text-align: right; margin-top: 2px; }
+
+        /* Converter */
+        .conv-row { display: grid; grid-template-columns: 1fr auto 1fr; gap: 8px; align-items: end; margin-bottom: 14px; }
+        .conv-field label { font-size: 0.7rem; opacity: 0.7; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 4px; display: block; }
+        .conv-field input, .conv-field select {
+            width: 100%; background: var(--input-bg); border: 1px solid var(--glass-border);
+            color: var(--text-color); padding: 12px 12px; border-radius: 12px;
+            font-size: 1rem; font-weight: 700;
+        }
+        .conv-swap {
+            background: var(--glass-strong); border: 1px solid var(--glass-border);
+            color: var(--text-color); width: 40px; height: 42px; border-radius: 12px;
+            cursor: pointer; font-size: 0.9rem;
+        }
+        .conv-tabs { display: flex; gap: 6px; margin-bottom: 14px; }
+        .conv-tab { flex: 1; padding: 10px; border-radius: 12px; background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--text-color); cursor: pointer; font-weight: 700; font-size: 0.78rem; }
+        .conv-tab.active { background: linear-gradient(135deg, var(--blob-1), var(--blob-2)); color:#fff; border-color: transparent; }
+
+        /* ---------- Settings ---------- */
+        .settings-view { display: flex; flex-direction: column; gap: 4px; }
+        .settings-input-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+        .settings-label { font-size: 0.78rem; font-weight: 700; opacity: 0.8; text-transform: uppercase; margin-left: 2px; letter-spacing: 0.5px; }
+        .settings-text-input {
+            width: 100%; background: var(--input-bg); border: 1px solid var(--glass-border);
+            padding: 13px 14px; border-radius: 14px; font-size: 0.95rem; font-weight: 600;
+            color: var(--text-color); transition: 0.2s;
+        }
+        .settings-text-input:focus { border-color: var(--blob-1); box-shadow: 0 0 12px color-mix(in srgb, var(--blob-1) 25%, transparent); }
+
+        .switch-row {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 12px 14px; background: var(--glass-bg);
+            border: 1px solid var(--glass-border); border-radius: 14px;
+        }
+        .switch-row .switch-label { font-weight: 700; font-size: 0.88rem; }
+        .switch-row .switch-desc { font-size: 0.72rem; opacity: 0.6; margin-top: 2px; }
+        .toggle {
+            position: relative; width: 44px; height: 26px; background: rgba(255,255,255,0.15); border-radius: 999px; cursor: pointer; transition: 0.25s; flex-shrink: 0;
+        }
+        .toggle::after { content: ""; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; background: #fff; border-radius: 50%; transition: 0.25s; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
+        .toggle.on { background: linear-gradient(135deg, var(--blob-1), var(--blob-2)); }
+        .toggle.on::after { left: 21px; }
+
+        .theme-grid { display: flex; flex-direction: row; flex-wrap: wrap; gap: 12px; justify-content: flex-start; width: 100%; margin-top: 5px; }
+        .theme-bubble {
+            width: 44px; height: 44px; border-radius: 50%; cursor: pointer;
+            border: 3px solid transparent; transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15); position: relative;
+        }
+        .theme-bubble.selected {
+            border-color: var(--text-color);
+            box-shadow: 0 0 15px var(--blob-1);
+            transform: scale(1.14);
+        }
+        .theme-bubble.selected::after {
+            content: "\f00c"; font-family: "Font Awesome 6 Free"; font-weight: 900;
+            position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+            color: #fff; font-size: 0.85rem; text-shadow: 0 1px 4px rgba(0,0,0,0.4);
+        }
+
+        .custom-theme-creator {
+            background: rgba(255, 255, 255, 0.03); border: 1px solid var(--glass-border);
+            border-radius: 20px; padding: 16px 14px; margin-top: 5px;
+        }
+        .color-picker-item {
+            display: flex; flex-direction: column; align-items: center; gap: 5px;
+            font-size: 0.7rem; font-weight: 700; opacity: 0.9;
+        }
+        .color-picker-item input[type="color"] {
+            -webkit-appearance: none; border: none; width: 40px; height: 40px;
+            border-radius: 50%; cursor: pointer; background: none;
+        }
+        .color-picker-item input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+        .color-picker-item input[type="color"]::-webkit-color-swatch { border: 2px solid var(--glass-border); border-radius: 50%; }
+
+        .save-btn {
+            background: linear-gradient(135deg, var(--blob-1), var(--blob-2));
+            color: #fff; padding: 14px 40px; border-radius: 50px; font-weight: 700;
+            border: none; cursor: pointer; width: 100%; margin-top: 14px;
+            font-size: 0.92rem; box-shadow: 0 4px 15px color-mix(in srgb, var(--blob-2) 30%, transparent);
+            transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .save-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px color-mix(in srgb, var(--blob-2) 45%, transparent); }
+        .save-btn:active { transform: translateY(0); }
+
+        a.github-footer, a.github-footer:visited, a.github-footer:hover, a.github-footer:active { text-decoration: none !important; color: var(--text-color) !important; }
+        .github-footer {
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            padding: 14px; border-radius: 20px; font-size: 0.88rem; font-weight: 600;
+            border: 1px solid var(--glass-border); background: var(--glass-bg);
+            backdrop-filter: blur(20px); transition: all 0.3s ease; margin-top: 20px;
+        }
+        .github-footer:hover { transform: translateY(-2px); background: var(--card-hover); }
+
+        /* Calculator */
+        .calc-grid { display:grid; grid-template-columns: repeat(4, 1fr); gap:8px; }
+        .calc-btn { padding:16px 0; font-size:1.15rem; font-weight:700; border-radius:16px; border:1px solid var(--glass-border); background:var(--glass-bg); color:var(--text-color); cursor:pointer; transition:all .15s; backdrop-filter: blur(10px); }
+        .calc-btn:hover { background: var(--card-hover); transform: translateY(-1px); }
+        .calc-btn:active { transform: translateY(0) scale(0.97); }
+        .calc-btn.calc-op { color: var(--blob-1); font-weight:800; }
+        .calc-btn.calc-fn { color: #ff8fa3; }
+        .calc-btn.calc-eq { background: linear-gradient(135deg, var(--blob-1), var(--blob-2)); color:#fff; border:none; }
+
+        /* Planner */
+        .planner-cal-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+        .cal-nav { background:var(--glass-bg); border:1px solid var(--glass-border); color:var(--text-color); width:32px; height:32px; border-radius:50%; cursor:pointer; }
+        .planner-cal-dow { display:grid; grid-template-columns: repeat(7,1fr); gap:4px; font-size:0.65rem; opacity:0.55; text-align:center; font-weight:700; margin-bottom:4px; }
+        .planner-cal-grid { display:grid; grid-template-columns: repeat(7,1fr); gap:4px; }
+        .cal-cell { position:relative; aspect-ratio:1; display:flex; align-items:center; justify-content:center; font-size:0.85rem; font-weight:600; border-radius:10px; cursor:pointer; transition: all .15s; }
+        .cal-cell:hover:not(.empty) { background: var(--card-hover); }
+        .cal-cell.empty { cursor:default; }
+        .cal-cell.today { outline:1.5px solid var(--blob-1); }
+        .cal-cell.sel { background: linear-gradient(135deg, var(--blob-1), var(--blob-2)); color:#fff; }
+        .cal-cell.has .dot { position:absolute; bottom:4px; width:4px; height:4px; border-radius:50%; background: var(--blob-2); }
+        .cal-cell.sel.has .dot { background:#fff; }
+        .planner-event { display:flex; align-items:center; gap:10px; padding:10px; background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:14px; margin-bottom:8px; }
+        .pe-icon { width:34px; height:34px; border-radius:10px; display:flex; align-items:center; justify-content:center; color:#fff; flex-shrink:0; }
+        .pe-body { flex:1; min-width:0; }
+        .pe-title { font-weight:700; font-size:0.9rem; }
+        .pe-meta { font-size:0.7rem; opacity:0.65; margin-top:2px; }
+        .pe-del { opacity:0.4; cursor:pointer; padding:6px; transition:0.15s; }
+        .pe-del:hover { opacity:1; color:#ff6a6a; }
+        .suggestion-chip { font-size:0.78rem; padding:8px 10px; background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:12px; margin-bottom:6px; line-height:1.4; }
+
+        /* About modal */
+        .about-card { max-width: 340px; }
+        .about-avatar { width:88px; height:88px; border-radius:50%; border:3px solid rgba(255,255,255,0.2); box-shadow:0 8px 24px rgba(0,0,0,0.3); }
+        .about-stats { display:flex; justify-content:space-around; margin: 6px 0 14px; padding:12px 0; border-top:1px solid rgba(255,255,255,0.12); border-bottom:1px solid rgba(255,255,255,0.12); }
+        .about-stats div { display:flex; flex-direction:column; align-items:center; }
+        .about-stats b { font-size:1.15rem; font-weight:800; }
+        .about-stats small { font-size:0.65rem; opacity:0.6; margin-top:2px; text-transform:uppercase; letter-spacing:0.5px; }
+
+        /* ---------- Modals ---------- */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.55); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); z-index: 150; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+        .modal-overlay.active { display: flex; animation: fadeIn 0.2s ease; }
+        .close-modal { position: absolute; top: 24px; right: 26px; font-size: 2rem; cursor: pointer; color: #fff; opacity: 0.8; }
+        .modal-input { background: transparent; border: none; border-bottom: 2px solid rgba(255,255,255,0.4); width: 80%; font-size: 1.7rem; color: #fff; text-align: center; padding: 10px; font-weight: 700; }
+        .settings-content { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); padding: 30px 24px; border-radius: 30px; width: 100%; max-width: 380px; text-align: center; color: #fff; box-shadow: 0 20px 50px rgba(0,0,0,0.35); }
+
+        /* Onboarding steps */
+        .onboard-step { display: none; }
+        .onboard-step.active { display: block; animation: fadeIn 0.35s ease; }
+        .onboard-emoji { font-size: 3rem; margin-bottom: 10px; }
+        .onboard-title { font-size: 1.6rem; font-weight: 800; margin-bottom: 8px; }
+        .onboard-desc { font-size: 0.9rem; opacity: 0.8; margin-bottom: 18px; line-height: 1.5; }
+        .onboard-dots { display: flex; gap: 6px; justify-content: center; margin-top: 14px; }
+        .onboard-dots .d { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.25); }
+        .onboard-dots .d.active { background: #fff; width: 22px; border-radius: 4px; }
+
+        /* confetti dot */
+        .confetti {
+            position: fixed; top: -20px; width: 8px; height: 12px; z-index: 300;
+            pointer-events: none; animation: fall linear forwards;
+        }
+        @keyframes fall {
+            to { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.05s !important; }
+        }
+    </style>
+</head>
+<body data-mode="dark">
+
+<div class="liquid-bg">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+</div>
+<canvas id="stars-canvas"></canvas>
+<canvas id="weather-canvas"></canvas>
+
+<svg width="0" height="0" style="position:absolute">
+    <defs>
+        <linearGradient id="ringGradient" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="var(--blob-1)"/>
+            <stop offset="100%" stop-color="var(--blob-2)"/>
+        </linearGradient>
+    </defs>
+</svg>
+
+<div class="loader-overlay" id="loader"><div class="spinner"></div></div>
+<div class="toast-stack" id="toast-stack"></div>
+
+<audio id="focus-audio" loop crossorigin="anonymous"></audio>
+
+<!-- Onboarding -->
+<div class="modal-overlay" id="onboarding-modal">
+    <div class="settings-content">
+        <div class="onboard-step active" data-step="1">
+            <div class="onboard-emoji">👋</div>
+            <div class="onboard-title">Welcome to Climind</div>
+            <div class="onboard-desc">Your weather, focus timer, and everyday toolbox — beautifully in one place.</div>
+            <input type="text" class="modal-input" id="onboard-name" placeholder="What should we call you?">
+        </div>
+        <div class="onboard-step" data-step="2">
+            <div class="onboard-emoji">🎨</div>
+            <div class="onboard-title">Pick a vibe</div>
+            <div class="onboard-desc">Choose a starting theme. You can change it any time.</div>
+            <div class="theme-grid" id="onboard-themes" style="justify-content:center; margin: 16px 0"></div>
+        </div>
+        <div class="onboard-step" data-step="3">
+            <div class="onboard-emoji">🚀</div>
+            <div class="onboard-title">You're all set</div>
+            <div class="onboard-desc">Search a city or use your location — the app will adapt the theme to real weather automatically.</div>
+        </div>
+        <div class="onboard-dots">
+            <div class="d active"></div><div class="d"></div><div class="d"></div>
+        </div>
+        <button class="save-btn" id="onboard-next" onclick="onboardNext()">Next <i class="fas fa-arrow-right"></i></button>
+    </div>
+</div>
+
+<!-- Bottom Nav -->
+<div class="bottom-nav" id="app-nav" style="display: none;">
+    <div class="nav-item active" onclick="switchView('weather')" id="nav-weather">
+        <i class="fas fa-cloud-sun"></i><span>Weather</span>
+    </div>
+    <div class="nav-item" onclick="switchView('focus')" id="nav-focus">
+        <i class="fas fa-brain"></i><span>Focus</span>
+    </div>
+    <div class="nav-item" onclick="switchView('tools')" id="nav-tools">
+        <i class="fas fa-toolbox"></i><span>Tools</span>
+    </div>
+    <div class="nav-item" onclick="switchView('settings')" id="nav-settings">
+        <i class="fas fa-sliders"></i><span>Settings</span>
+    </div>
+</div>
+
+<div class="app-container">
+    <!-- Landing -->
+    <div class="landing-screen" id="landing-page">
+        <div class="landing-badge">✦ Climind • v5</div>
+        <div class="landing-title">Climind</div>
+        <div class="landing-subtitle">Weather · Focus · Toolbox</div>
+        <div id="welcome-msg"></div>
+        <div class="search-wrapper">
+            <button class="circle-btn" style="background:transparent; color:var(--text-color)" onclick="getLocation()" title="Use my location"><i class="fas fa-location-arrow"></i></button>
+            <input type="text" class="landing-input" id="start-input" placeholder="Search a city..." onkeypress="handleStartEnter(event)">
+            <button class="circle-btn" onclick="startApp()"><i class="fas fa-arrow-right"></i></button>
+        </div>
+        <button class="blur-btn" style="margin-top:24px; width:auto; padding:0 16px; height:42px; border-radius:999px; gap:8px; font-weight:700; font-size:0.82rem" onclick="toggleMode()">
+            <i class="fas fa-adjust"></i> Toggle theme mode
+        </button>
+    </div>
+
+    <!-- Weather View -->
+    <div class="app-view" id="view-weather">
+        <div id="quote-slot"></div>
+        <div class="header">
+            <div>
+                <div class="city-name" id="city-name">--</div>
+                <div class="date-text" id="date-display">--</div>
+            </div>
+            <div class="header-actions">
+                <div class="blur-btn" onclick="toggleMode()" title="Toggle mode"><i class="fas fa-adjust"></i></div>
+                <div class="blur-btn" onclick="getLocation()" title="Locate me"><i class="fas fa-location-arrow"></i></div>
+                <div class="blur-btn" onclick="openSearchModal()" title="Search"><i class="fas fa-search"></i></div>
+            </div>
+        </div>
+
+        <div class="glass-card assistant-card">
+            <div class="assistant-header">
+                <div class="status-emoji" id="status-emoji">✨</div>
+                <div>
+                    <div id="greeting-title" style="font-weight: 800; font-size: 1.1rem;">Good Day!</div>
+                    <div id="status-message" style="font-size: 0.85rem; opacity: 0.9;">Analysing conditions...</div>
+                </div>
+            </div>
+            <div class="assistant-body" id="assistant-tips"></div>
+        </div>
+
+        <div class="glass-card main-card">
+            <i class="fas fa-sun weather-icon" id="main-icon"></i>
+            <div class="temp-display" id="current-temp">--<span>°</span></div>
+            <div class="weather-desc" id="weather-desc">--</div>
+            <div class="feels-like" id="feels-like"></div>
+            <div class="details-grid">
+                <div class="detail-item"><i class="fas fa-wind"></i><span id="wind-speed">--</span><small>Wind</small></div>
+                <div class="detail-item"><i class="fas fa-tint"></i><span id="humidity">--%</span><small>Humidity</small></div>
+                <div class="detail-item"><i class="fas fa-sun"></i><span id="uv-index">--</span><small>UV</small></div>
+                <div class="detail-item"><i class="fas fa-clock"></i><span id="sunset-time">--</span><small>Sunset</small></div>
+            </div>
+        </div>
+
+        <span class="section-title"><i class="fas fa-hourglass-half"></i> Hourly Forecast</span>
+        <div class="hourly-forecast-container" id="hourly-list"></div>
+
+        <span class="section-title"><i class="fas fa-calendar-week"></i> 7-Day Forecast</span>
+        <div class="daily-list" id="daily-list"></div>
+    </div>
+
+    <!-- Focus View -->
+    <div class="app-view" id="view-focus">
+        <h2 style="font-size: 1.5rem; font-weight:800; margin: 10px 0 15px 4px;">Focus Mode</h2>
+        <div class="glass-card tools-view-card">
+            <p style="font-size: 0.85rem; font-weight: 700; opacity: 0.7; text-transform: uppercase; margin-bottom: 12px; letter-spacing: 1px;">Pomodoro Timer</p>
+            <div class="timer-circle-wrapper">
+                <svg class="timer-ring" viewBox="0 0 100 100">
+                    <circle class="ring-bg" cx="50" cy="50" r="46"/>
+                    <circle class="ring-fg" id="ring-fg" cx="50" cy="50" r="46" stroke-dasharray="289" stroke-dashoffset="0"/>
+                </svg>
+                <div class="timer-circle">
+                    <div id="timer-display">25:00</div>
+                    <span id="timer-label" style="font-size: 0.76rem; opacity: 0.7; font-weight: 700; text-transform: uppercase; margin-top: 5px; letter-spacing: 1px;">Work Session</span>
+                </div>
+            </div>
+            <div class="timer-presets">
+                <button class="timer-preset active-preset" id="preset-work" onclick="setTimerDuration(25, 'work')">Focus 25</button>
+                <button class="timer-preset" id="preset-short" onclick="setTimerDuration(5, 'short')">Break 5</button>
+                <button class="timer-preset" id="preset-long" onclick="setTimerDuration(15, 'long')">Long 15</button>
+            </div>
+            <div class="custom-timer-row">
+                <span>Custom minutes</span>
+                <input type="number" id="custom-minutes-input" min="1" max="180" value="25">
+            </div>
+            <div class="timer-controls-row">
+                <button class="timer-main-btn" id="timer-toggle-btn" onclick="toggleTimer()"><i class="fas fa-play"></i> Start</button>
+                <button class="timer-secondary-btn" id="ambient-toggle" onclick="toggleMute()"><i class="fas fa-volume-up"></i></button>
+                <button class="timer-secondary-btn" onclick="resetTimer()"><i class="fas fa-rotate-right"></i></button>
+            </div>
+            <div class="session-counter" id="session-counter">
+                <span>Today:</span>
+                <span id="session-dots"></span>
+                <span id="session-count">0 done</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tools View -->
+    <div class="app-view" id="view-tools">
+        <div id="tools-home">
+            <h2 style="font-size: 1.5rem; font-weight:800; margin: 10px 0 15px 4px;">Toolbox</h2>
+            <div class="tools-grid">
+                <div class="tool-tile" onclick="openTool('notes')">
+                    <div class="tile-icon"><i class="fas fa-note-sticky"></i></div>
+                    <div class="tile-title">Notes & Tasks</div>
+                    <div class="tile-desc">Quick to-do list that stays with you.</div>
+                </div>
+                <div class="tool-tile" onclick="openTool('clock')">
+                    <div class="tile-icon" style="background: linear-gradient(135deg,#f6d365,#fda085)"><i class="fas fa-globe"></i></div>
+                    <div class="tile-title">World Clock</div>
+                    <div class="tile-desc">Track time across major cities.</div>
+                </div>
+                <div class="tool-tile" onclick="openTool('converter')">
+                    <div class="tile-icon" style="background: linear-gradient(135deg,#84fab0,#8fd3f4)"><i class="fas fa-right-left"></i></div>
+                    <div class="tile-title">Unit Converter</div>
+                    <div class="tile-desc">Length, mass, temperature.</div>
+                </div>
+                <div class="tool-tile" onclick="openTool('calc')">
+                    <div class="tile-icon" style="background: linear-gradient(135deg,#a18cd1,#fbc2eb)"><i class="fas fa-calculator"></i></div>
+                    <div class="tile-title">Calculator</div>
+                    <div class="tile-desc">Fast math, right here.</div>
+                </div>
+                <div class="tool-tile" onclick="openTool('planner')">
+                    <div class="tile-icon" style="background: linear-gradient(135deg,#43cea2,#185a9d)"><i class="fas fa-calendar-check"></i></div>
+                    <div class="tile-title">Planner & Reminders</div>
+                    <div class="tile-desc">Calendar, study, travel & sleep goals.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tool-panel" id="tool-notes">
+            <div class="back-row"><button class="back-btn" onclick="closeTool()"><i class="fas fa-arrow-left"></i> Back</button><h3 style="font-weight:800">Notes & Tasks</h3></div>
+            <div class="glass-card">
+                <div class="note-add">
+                    <input id="note-input" placeholder="Add a task..." onkeypress="if(event.key==='Enter')addNote()">
+                    <button onclick="addNote()"><i class="fas fa-plus"></i></button>
+                </div>
+                <div id="note-list"></div>
+                <div id="note-empty" style="text-align:center; padding:20px 0; opacity:0.55; font-size:0.9rem;">No tasks yet. Add your first one ✨</div>
+            </div>
+        </div>
+
+        <div class="tool-panel" id="tool-clock">
+            <div class="back-row"><button class="back-btn" onclick="closeTool()"><i class="fas fa-arrow-left"></i> Back</button><h3 style="font-weight:800">World Clock</h3></div>
+            <div class="glass-card">
+                <div id="clock-list"></div>
+            </div>
+        </div>
+
+        <div class="tool-panel" id="tool-converter">
+            <div class="back-row"><button class="back-btn" onclick="closeTool()"><i class="fas fa-arrow-left"></i> Back</button><h3 style="font-weight:800">Unit Converter</h3></div>
+            <div class="glass-card">
+                <div class="conv-tabs">
+                    <div class="conv-tab active" data-cat="length" onclick="setConvCategory('length')">Length</div>
+                    <div class="conv-tab" data-cat="mass" onclick="setConvCategory('mass')">Mass</div>
+                    <div class="conv-tab" data-cat="temp" onclick="setConvCategory('temp')">Temp</div>
+                </div>
+                <div class="conv-row">
+                    <div class="conv-field">
+                        <label>From</label>
+                        <input type="number" id="conv-from-val" value="1" oninput="doConvert('from')">
+                        <select id="conv-from-unit" onchange="doConvert('from')" style="margin-top:8px"></select>
+                    </div>
+                    <button class="conv-swap" onclick="swapConv()"><i class="fas fa-right-left"></i></button>
+                    <div class="conv-field">
+                        <label>To</label>
+                        <input type="number" id="conv-to-val" value="0" oninput="doConvert('to')">
+                        <select id="conv-to-unit" onchange="doConvert('from')" style="margin-top:8px"></select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tool-panel" id="tool-calc">
+            <div class="back-row"><button class="back-btn" onclick="closeTool()"><i class="fas fa-arrow-left"></i> Back</button><h3 style="font-weight:800">Calculator</h3></div>
+            <div class="glass-card">
+                <div id="calc-display" style="font-size:2rem; font-weight:800; text-align:right; margin:6px 4px 4px; letter-spacing:-1px; min-height:2.4rem; opacity:0.7; word-break:break-all;">0</div>
+                <div id="calc-result" style="font-size:2.4rem; font-weight:800; text-align:right; margin:4px 4px 14px; letter-spacing:-1px; min-height:2.6rem; background: linear-gradient(135deg, var(--text-color), var(--blob-1)); -webkit-background-clip: text; background-clip:text; -webkit-text-fill-color: transparent; color: transparent;">0</div>
+                <div class="calc-grid">
+                    <button class="calc-btn calc-fn" onclick="calcClear()">C</button>
+                    <button class="calc-btn calc-fn" onclick="calcBackspace()"><i class="fas fa-delete-left"></i></button>
+                    <button class="calc-btn calc-fn" onclick="calcPush('%')">%</button>
+                    <button class="calc-btn calc-op" onclick="calcPush('/')">÷</button>
+                    <button class="calc-btn" onclick="calcPush('7')">7</button>
+                    <button class="calc-btn" onclick="calcPush('8')">8</button>
+                    <button class="calc-btn" onclick="calcPush('9')">9</button>
+                    <button class="calc-btn calc-op" onclick="calcPush('*')">×</button>
+                    <button class="calc-btn" onclick="calcPush('4')">4</button>
+                    <button class="calc-btn" onclick="calcPush('5')">5</button>
+                    <button class="calc-btn" onclick="calcPush('6')">6</button>
+                    <button class="calc-btn calc-op" onclick="calcPush('-')">−</button>
+                    <button class="calc-btn" onclick="calcPush('1')">1</button>
+                    <button class="calc-btn" onclick="calcPush('2')">2</button>
+                    <button class="calc-btn" onclick="calcPush('3')">3</button>
+                    <button class="calc-btn calc-op" onclick="calcPush('+')">+</button>
+                    <button class="calc-btn" onclick="calcPush('(')">(</button>
+                    <button class="calc-btn" onclick="calcPush('0')">0</button>
+                    <button class="calc-btn" onclick="calcPush('.')">.</button>
+                    <button class="calc-btn calc-eq" onclick="calcEval()">=</button>
+                    <button class="calc-btn" onclick="calcPush(')')" style="grid-column: span 4">)</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="tool-panel" id="tool-planner">
+            <div class="back-row"><button class="back-btn" onclick="closeTool()"><i class="fas fa-arrow-left"></i> Back</button><h3 style="font-weight:800">Planner & Reminders</h3></div>
+            <div class="glass-card">
+                <div class="planner-cal-head">
+                    <button class="cal-nav" onclick="plannerMonth(-1)"><i class="fas fa-chevron-left"></i></button>
+                    <div id="planner-month-label" style="font-weight:800; font-size:1rem;">—</div>
+                    <button class="cal-nav" onclick="plannerMonth(1)"><i class="fas fa-chevron-right"></i></button>
+                </div>
+                <div class="planner-cal-dow">
+                    <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
+                </div>
+                <div id="planner-cal-grid" class="planner-cal-grid"></div>
+            </div>
+            <div class="glass-card" style="margin-top:14px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                    <div style="font-weight:800" id="planner-day-label">Today</div>
+                    <button class="timer-preset" style="flex:0 0 auto; padding:6px 12px" onclick="openPlannerAdd()"><i class="fas fa-plus"></i> Add</button>
+                </div>
+                <div id="planner-events-list"></div>
+                <div id="planner-suggestions" style="margin-top:12px;"></div>
+            </div>
+        </div>
+
+        <div class="tool-panel" id="tool-calc-legacy" style="display:none"></div>
+    </div>
+
+    <!-- Settings View -->
+    <div class="app-view" id="view-settings">
+        <h2 style="font-size: 1.5rem; font-weight:800; margin: 10px 0 15px 4px;">Personalize</h2>
+        <div class="glass-card settings-view">
+            <div class="settings-input-group">
+                <span class="settings-label">Your Name</span>
+                <input type="text" class="settings-text-input" id="settings-name" placeholder="Your name">
+            </div>
+
+            <div class="settings-input-group">
+                <span class="settings-label">Color Theme</span>
+                <div class="theme-grid" id="settings-themes-grid"></div>
+            </div>
+
+            <div class="settings-input-group">
+                <span class="settings-label">Experience</span>
+                <div class="switch-row" style="margin-bottom:8px">
+                    <div>
+                        <div class="switch-label">Dynamic weather theme</div>
+                        <div class="switch-desc">Auto-adapt colors to real weather.</div>
+                    </div>
+                    <div class="toggle" id="tg-dyn" onclick="toggleSetting('dynamicTheme', this)"></div>
+                </div>
+                <div class="switch-row" style="margin-bottom:8px">
+                    <div>
+                        <div class="switch-label">Cosmic background</div>
+                        <div class="switch-desc">Twinkling stars behind the app.</div>
+                    </div>
+                    <div class="toggle" id="tg-stars" onclick="toggleSetting('stars', this)"></div>
+                </div>
+                <div class="switch-row" style="margin-bottom:8px">
+                    <div>
+                        <div class="switch-label">Daily quote</div>
+                        <div class="switch-desc">A little wisdom at the top.</div>
+                    </div>
+                    <div class="toggle" id="tg-quotes" onclick="toggleSetting('quotes', this)"></div>
+                </div>
+                <div class="switch-row">
+                    <div>
+                        <div class="switch-label">Temperature unit</div>
+                        <div class="switch-desc">°C or °F.</div>
+                    </div>
+                    <div class="toggle" id="tg-unit" onclick="toggleUnit(this)"></div>
+                </div>
+            </div>
+
+            <div class="settings-input-group">
+                <span class="settings-label">Focus Ambient Sound</span>
+                <select class="settings-text-input" id="settings-focus-sound" onchange="updateFocusSoundPref(this.value)">
+                    <option value="none">Silent</option>
+                    <option value="lofi">Lofi Chill Radio 🎵</option>
+                    <option value="groove">SomaFM · Groove Salad 🌿</option>
+                    <option value="deepspace">SomaFM · Deep Space One 🚀</option>
+                    <option value="dronezone">SomaFM · Drone Zone 🌊</option>
+                    <option value="fluid">SomaFM · Fluid (chillhop) 💧</option>
+                </select>
+                <div id="lofi-warning-notice" style="display: none; font-size: 0.72rem; opacity: 0.7; font-weight: 600; margin-top: 6px; line-height: 1.4;">
+                    ⚠️ Live stream may occasionally contain radio ads.
+                </div>
+            </div>
+
+            <div class="settings-input-group" style="border-top: 1px solid var(--glass-border); padding-top: 15px; margin-top: 10px;">
+                <span class="settings-label">Create Custom Theme</span>
+                <div class="custom-theme-creator">
+                    <div style="display:flex; gap: 10px; justify-content: space-around; margin-bottom: 14px;">
+                        <div class="color-picker-item"><input type="color" id="picker-color-1" value="#4facfe"><small>Blob 1</small></div>
+                        <div class="color-picker-item"><input type="color" id="picker-color-2" value="#00f2fe"><small>Blob 2</small></div>
+                        <div class="color-picker-item"><input type="color" id="picker-color-3" value="#a18cd1"><small>Blob 3</small></div>
+                    </div>
+                    <button class="timer-preset" style="max-width:220px; margin: 0 auto 14px auto; display:block" onclick="generateCustomTheme()">Generate & Copy Code</button>
+                    <div class="settings-input-group" style="margin-bottom:0px;">
+                        <span class="settings-label" style="font-size:0.72rem; opacity:0.7;">Import Theme Code</span>
+                        <div style="display: flex; gap: 8px;">
+                            <input type="text" class="settings-text-input" id="import-theme-input" placeholder="#ff0000,#00ff00,#0000ff" style="padding: 10px 12px; font-size:0.85rem;">
+                            <button class="timer-preset" style="flex:0 0 80px;" onclick="importCustomTheme()">Import</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            
+            <div class="settings-input-group">
+                <span class="settings-label" data-i18n="fontSize">Font Size</span>
+                <select class="settings-text-input" id="settings-font-size" onchange="updateFontSize(this.value)">
+                    <option value="0.9">Small</option>
+                    <option value="1" selected>Medium</option>
+                    <option value="1.15">Large</option>
+                    <option value="1.3">Extra Large</option>
+                </select>
+            </div>
+
+
+
+            <div class="settings-input-group">
+                <span class="settings-label" data-i18n="bgfx">Background Effect</span>
+                <select class="settings-text-input" id="settings-bgfx" onchange="updateBgFx(this.value)">
+                    <option value="blobs">Liquid Blobs</option>
+                    <option value="mesh">Mesh Gradient</option>
+                    <option value="waves">Diagonal Waves</option>
+                    <option value="grid">Neon Grid</option>
+                    <option value="none">None</option>
+                </select>
+            </div>
+
+            <div class="settings-input-group">
+                <span class="settings-label" data-i18n="savedCities">Saved Cities</span>
+                <div style="display:flex; gap:8px;">
+                    <input type="text" class="settings-text-input" id="new-city-input" placeholder="Add a city..." style="padding:10px 12px;">
+                    <button class="timer-preset" style="flex:0 0 70px;" onclick="addSavedCity()">Add</button>
+                </div>
+                <div id="saved-cities-list" style="margin-top:8px;"></div>
+            </div>
+
+            <div class="settings-input-group">
+                <span class="settings-label" data-i18n="about">About</span>
+                <button class="timer-preset" style="width:100%;" onclick="openAboutModal()">
+                    <i class="fas fa-user"></i> About the Creator
+                </button>
+            </div>
+
+            <button class="save-btn" onclick="saveSettings()"><i class="fas fa-check"></i> Save Changes</button>
+            <a href="https://github.com/Erfan-8910/Weather-APP" target="_blank" rel="noopener" class="github-footer">
+                <i class="fab fa-github"></i>
+                <span>Built by Erfan · Climind v5</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="search-modal">
+    <div class="close-modal" onclick="closeSearchModal()">×</div>
+    <input type="text" class="modal-input" id="modal-input" placeholder="Search City..." onkeypress="handleModalEnter(event)">
+</div>
+
+<div class="modal-overlay" id="about-modal">
+    <div class="close-modal" onclick="closeAboutModal()">×</div>
+    <div class="settings-content about-card">
+        <img id="about-avatar" src="" alt="" class="about-avatar" onerror="this.style.display='none'">
+        <h2 id="about-name" style="font-size:1.4rem; font-weight:800; margin:8px 0 2px;">Erfan</h2>
+        <div id="about-login" style="opacity:0.7; font-size:0.85rem; margin-bottom:10px;">@Erfan-8910</div>
+        <p id="about-bio" style="font-size:0.9rem; opacity:0.9; line-height:1.5; margin-bottom:14px;">Loading GitHub profile…</p>
+        <div id="about-stats" class="about-stats"></div>
+        <a id="about-link" href="https://github.com/Erfan-8910" target="_blank" rel="noopener" class="save-btn" style="display:inline-flex; align-items:center; gap:8px; text-decoration:none; margin-top:6px;">
+            <i class="fab fa-github"></i> Visit GitHub Profile
+        </a>
+        <div style="font-size:0.7rem; opacity:0.55; margin-top:12px;">Climind v5 · Built by Erfan</div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="planner-add-modal">
+    <div class="close-modal" onclick="closePlannerAdd()">×</div>
+    <div class="settings-content" style="text-align:left; max-width:340px;">
+        <h3 style="font-size:1.15rem; font-weight:800; margin:0 0 14px; text-align:center;">New Plan</h3>
+        <div class="settings-input-group"><span class="settings-label">Title</span>
+            <input class="settings-text-input" id="pa-title" placeholder="e.g. Study calculus" onkeypress="if(event.key==='Enter')submitPlannerAdd()"></div>
+        <div class="settings-input-group"><span class="settings-label">Category</span>
+            <select class="settings-text-input" id="pa-cat">
+                <option value="study">📚 Study</option>
+                <option value="focus">🎯 Focus</option>
+                <option value="travel">✈️ Travel</option>
+                <option value="sleep">🌙 Sleep</option>
+                <option value="workout">💪 Workout</option>
+                <option value="other">⭐ Other</option>
+            </select></div>
+        <div style="display:flex; gap:8px;">
+            <div class="settings-input-group" style="flex:1"><span class="settings-label">Date</span>
+                <input type="date" class="settings-text-input" id="pa-date"></div>
+            <div class="settings-input-group" style="flex:1"><span class="settings-label">Time</span>
+                <input type="time" class="settings-text-input" id="pa-time"></div>
+        </div>
+        <button class="save-btn" onclick="submitPlannerAdd()"><i class="fas fa-check"></i> Save Plan</button>
+    </div>
+</div>
+
+<script>
+/* ============================================================
+ * Climind v5.0.0 — single-file HTML app
+ * Structure preserved from v4.1.0 (single index HTML).
+ * ============================================================ */
+
+const themes = {
+    smart:    { name: 'Smart',    colors: ['#4facfe', '#00f2fe', '#a18cd1'] },
+    ocean:    { name: 'Ocean',    colors: ['#2E3192', '#1BFFFF', '#D9AFD9'] },
+    sunset:   { name: 'Sunset',   colors: ['#ff9a9e', '#fecfef', '#feada6'] },
+    forest:   { name: 'Forest',   colors: ['#134E5E', '#71B280', '#2bc0e4'] },
+    midnight: { name: 'Night',    colors: ['#0f2027', '#203a43', '#2c5364'] },
+    berry:    { name: 'Berry',    colors: ['#8E2DE2', '#4A00E0', '#b29f94'] },
+    aurora:   { name: 'Aurora',   colors: ['#00c9ff', '#92fe9d', '#0072ff'] },
+    neon:     { name: 'Neon',     colors: ['#f857a6', '#ff5858', '#4b6cb7'] },
+    space:    { name: 'Space',    colors: ['#111827', '#4f46e5', '#ec4899'] },
+    peach:    { name: 'Peach',    colors: ['#ffecd2', '#fcb69f', '#ff9a9e'] },
+    mint:     { name: 'Mint',     colors: ['#3fada8', '#a8ff78', '#78ffd6'] },
+    volcano:  { name: 'Volcano',  colors: ['#ff416c', '#ff4b2b', '#ffb347'] }
+};
+
+/* Dynamic theme presets triggered by real weather */
+const weatherThemes = {
+    clearDay:   ['#f6d365', '#fda085', '#ffb199'],
+    clearNight: ['#0f2027', '#2c5364', '#4facfe'],
+    cloudy:     ['#8e9eab', '#eef2f3', '#a1c4fd'],
+    rain:       ['#3a7bd5', '#00d2ff', '#5c6bc0'],
+    snow:       ['#e0eafc', '#cfdef3', '#a1c4fd'],
+    storm:      ['#232526', '#414345', '#7f8c8d'],
+    fog:        ['#bdc3c7', '#2c3e50', '#8e9eab']
+};
+
+const weatherCodes = {
+    0:  { icon: 'fa-sun',                desc: 'Clear',          emoji: '☀️', kind: 'clear' },
+    1:  { icon: 'fa-cloud-sun',          desc: 'Mainly Clear',   emoji: '🌤️', kind: 'clear' },
+    2:  { icon: 'fa-cloud-sun',          desc: 'Partly Cloudy',  emoji: '⛅', kind: 'cloudy' },
+    3:  { icon: 'fa-cloud',              desc: 'Overcast',       emoji: '☁️', kind: 'cloudy' },
+    45: { icon: 'fa-smog',               desc: 'Fog',            emoji: '🌫️', kind: 'fog' },
+    48: { icon: 'fa-smog',               desc: 'Fog',            emoji: '🌫️', kind: 'fog' },
+    51: { icon: 'fa-cloud-rain',         desc: 'Drizzle',        emoji: '🌦️', kind: 'rain' },
+    53: { icon: 'fa-cloud-rain',         desc: 'Drizzle',        emoji: '🌦️', kind: 'rain' },
+    55: { icon: 'fa-cloud-rain',         desc: 'Drizzle',        emoji: '🌦️', kind: 'rain' },
+    61: { icon: 'fa-cloud-showers-heavy',desc: 'Rain',           emoji: '🌧️', kind: 'rain' },
+    63: { icon: 'fa-cloud-showers-heavy',desc: 'Rain',           emoji: '🌧️', kind: 'rain' },
+    65: { icon: 'fa-cloud-showers-heavy',desc: 'Heavy Rain',     emoji: '🌧️', kind: 'rain' },
+    71: { icon: 'fa-snowflake',          desc: 'Snow',           emoji: '❄️', kind: 'snow' },
+    73: { icon: 'fa-snowflake',          desc: 'Snow',           emoji: '🌨️', kind: 'snow' },
+    75: { icon: 'fa-snowflake',          desc: 'Heavy Snow',     emoji: '❄️', kind: 'snow' },
+    80: { icon: 'fa-cloud-showers-heavy',desc: 'Showers',        emoji: '🌦️', kind: 'rain' },
+    95: { icon: 'fa-bolt',               desc: 'Thunderstorm',   emoji: '⛈️', kind: 'storm' },
+    96: { icon: 'fa-bolt',               desc: 'Thunderstorm',   emoji: '⛈️', kind: 'storm' },
+    99: { icon: 'fa-bolt',               desc: 'Thunderstorm',   emoji: '⛈️', kind: 'storm' }
+};
+
+const QUOTES = [
+    { t: "The journey of a thousand miles begins with one step.", a: "Lao Tzu" },
+    { t: "Do what you can, with what you have, where you are.", a: "Theodore Roosevelt" },
+    { t: "Success is not final, failure is not fatal: it is the courage to continue that counts.", a: "Winston Churchill" },
+    { t: "In the middle of every difficulty lies opportunity.", a: "Albert Einstein" },
+    { t: "The best way to predict the future is to create it.", a: "Peter Drucker" },
+    { t: "Whether you think you can, or you think you can't — you're right.", a: "Henry Ford" },
+    { t: "It always seems impossible until it's done.", a: "Nelson Mandela" },
+    { t: "Simplicity is the ultimate sophistication.", a: "Leonardo da Vinci" },
+    { t: "What we think, we become.", a: "Buddha" },
+    { t: "Try not to become a man of success, but a man of value.", a: "Albert Einstein" },
+    { t: "The only way to do great work is to love what you do.", a: "Steve Jobs" },
+    { t: "Stars can't shine without darkness.", a: "Anonymous" },
+    { t: "Little by little, one travels far.", a: "J.R.R. Tolkien" },
+    { t: "Everything you can imagine is real.", a: "Pablo Picasso" }
+];
+
+const WORLD_CLOCKS = [
+    { c: "New York",  tz: "America/New_York" },
+    { c: "London",    tz: "Europe/London" },
+    { c: "Tehran",    tz: "Asia/Tehran" },
+    { c: "Dubai",     tz: "Asia/Dubai" },
+    { c: "Tokyo",     tz: "Asia/Tokyo" },
+    { c: "Sydney",    tz: "Australia/Sydney" }
+];
+
+const UNITS = {
+    length: { m: 1, km: 1000, cm: 0.01, mm: 0.001, mi: 1609.344, yd: 0.9144, ft: 0.3048, in: 0.0254 },
+    mass:   { kg: 1, g: 0.001, mg: 0.000001, lb: 0.453592, oz: 0.0283495, ton: 1000 },
+    temp:   { C: 'C', F: 'F', K: 'K' }
+};
+
+let user = {
+    name: '', theme: 'smart', mode: 'dark',
+    dynamicTheme: true, stars: false, quotes: true, unit: 'c'
+};
+let currentWeatherKind = null;
+let sessionCount = 0;
+let convCategory = 'length';
+
+/* ---------- Boot ---------- */
+window.addEventListener('load', () => {
+    loadSession();
+    resizeCanvas();
+    resizeStars();
+    setInterval(updateWorldClocks, 1000);
+    // Load daily quote
+    renderQuote();
+});
+window.addEventListener('resize', () => { resizeCanvas(); resizeStars(); });
+
+/* ---------- Session ---------- */
+function loadSession() {
+    try {
+        const s = JSON.parse(localStorage.getItem('climind_user') || 'null');
+        if (s) Object.assign(user, s);
+    } catch(e){}
+    const sCustom = localStorage.getItem('weather_custom_theme');
+    if (sCustom) themes['custom'] = { name: 'Custom', colors: sCustom.split(',') };
+    sessionCount = parseInt(localStorage.getItem('climind_sessions_' + todayKey()) || '0', 10);
+
+    document.body.setAttribute('data-mode', user.mode);
+    applyTheme(user.theme);
+    loadFocusAudio();
+    applyStarsToggle();
+    renderSessionDots();
+
+    if (!user.name) {
+        renderOnboardThemes();
+        document.getElementById('onboarding-modal').classList.add('active');
+        return;
+    }
+
+    document.getElementById('welcome-msg').innerHTML = `<span style="opacity:0.65">Welcome back,</span> <b>${escapeHtml(user.name)}</b> ✨`;
+    document.getElementById('welcome-msg').style.display = 'block';
+
+    const sCity = localStorage.getItem('weather_city');
+    if (sCity) {
+        try {
+            const coords = JSON.parse(sCity);
+            if (coords && coords.latitude && coords.longitude) fetchWeather(coords.name, coords);
+            else fetchWeather(sCity);
+        } catch(e) { fetchWeather(sCity); }
+    }
+}
+
+function saveUser() { localStorage.setItem('climind_user', JSON.stringify(user)); }
+function todayKey() { const d = new Date(); return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`; }
+
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+/* ---------- Onboarding ---------- */
+let onboardStep = 1;
+function renderOnboardThemes() {
+    const grid = document.getElementById('onboard-themes');
+    grid.innerHTML = '';
+    Object.keys(themes).slice(0, 8).forEach(k => {
+        const b = document.createElement('div');
+        b.className = `theme-bubble ${user.theme === k ? 'selected' : ''}`;
+        b.style.background = `linear-gradient(135deg, ${themes[k].colors[0]}, ${themes[k].colors[1]})`;
+        b.onclick = () => { user.theme = k; applyTheme(k); renderOnboardThemes(); };
+        grid.appendChild(b);
+    });
+}
+function onboardNext() {
+    if (onboardStep === 1) {
+        const n = document.getElementById('onboard-name').value.trim();
+        if (!n) return toast('Please enter your name 🙂', 'error');
+        user.name = n; saveUser();
+    }
+    if (onboardStep >= 3) {
+        document.getElementById('onboarding-modal').classList.remove('active');
+        toast(`Welcome, ${user.name}! 👋`, 'success');
+        confetti();
+        document.getElementById('welcome-msg').innerHTML = `<span style="opacity:0.65">Welcome,</span> <b>${escapeHtml(user.name)}</b> ✨`;
+        document.getElementById('welcome-msg').style.display = 'block';
+        return;
+    }
+    onboardStep++;
+    document.querySelectorAll('.onboard-step').forEach(s => s.classList.remove('active'));
+    document.querySelector(`.onboard-step[data-step="${onboardStep}"]`).classList.add('active');
+    const dots = document.querySelectorAll('.onboard-dots .d');
+    dots.forEach((d,i) => d.classList.toggle('active', i < onboardStep));
+    document.getElementById('onboard-next').innerHTML = onboardStep === 3
+        ? `Let's go <i class="fas fa-rocket"></i>` : `Next <i class="fas fa-arrow-right"></i>`;
+}
+
+/* ---------- Theme ---------- */
+function toggleMode() {
+    user.mode = user.mode === 'dark' ? 'light' : 'dark';
+    document.body.setAttribute('data-mode', user.mode);
+    saveUser();
+    applyTheme(user.theme);
+}
+function applyTheme(key) {
+    const t = themes[key] || themes.smart;
+    document.documentElement.style.setProperty('--blob-1', t.colors[0]);
+    document.documentElement.style.setProperty('--blob-2', t.colors[1]);
+    document.documentElement.style.setProperty('--blob-3', t.colors[2]);
+    // meta theme-color
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute('content', user.mode === 'dark' ? '#08090d' : '#eef2f7');
+}
+function applyDynamicTheme(kind, isDay) {
+    if (!user.dynamicTheme) return;
+    let key = null;
+    if (kind === 'clear') key = isDay ? 'clearDay' : 'clearNight';
+    else if (weatherThemes[kind]) key = kind;
+    if (!key) return;
+    const colors = weatherThemes[key];
+    themes['_weather'] = { name: 'Weather', colors };
+    document.documentElement.style.setProperty('--blob-1', colors[0]);
+    document.documentElement.style.setProperty('--blob-2', colors[1]);
+    document.documentElement.style.setProperty('--blob-3', colors[2]);
+}
+
+/* ---------- View router ---------- */
+function switchView(viewId) {
+    document.querySelectorAll('.app-view').forEach(v => v.classList.remove('active-view'));
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    document.getElementById(`view-${viewId}`).classList.add('active-view');
+    document.getElementById(`nav-${viewId}`).classList.add('active');
+    if (viewId === 'settings') loadSettingsViewUI();
+    if (viewId === 'tools') { closeTool(); }
+}
+
+/* ---------- Settings ---------- */
+function loadSettingsViewUI() {
+    document.getElementById('settings-name').value = user.name;
+    document.getElementById('settings-focus-sound').value = focusAudioSound;
+    document.getElementById('lofi-warning-notice').style.display = (focusAudioSound && focusAudioSound !== 'none') ? 'block' : 'none';
+    setToggle('tg-dyn', user.dynamicTheme);
+    setToggle('tg-stars', user.stars);
+    setToggle('tg-quotes', user.quotes);
+    setToggle('tg-unit', user.unit === 'f');
+    const grid = document.getElementById('settings-themes-grid');
+    grid.innerHTML = '';
+    Object.keys(themes).filter(k => !k.startsWith('_')).forEach(k => {
+        const b = document.createElement('div');
+        b.className = `theme-bubble ${user.theme === k ? 'selected' : ''}`;
+        b.style.background = `linear-gradient(135deg, ${themes[k].colors[0]}, ${themes[k].colors[1]})`;
+        b.title = themes[k].name;
+        b.onclick = () => { user.theme = k; applyTheme(k); loadSettingsViewUI(); };
+        grid.appendChild(b);
+    });
+}
+function setToggle(id, on) { document.getElementById(id).classList.toggle('on', !!on); }
+function toggleSetting(key, el) {
+    user[key] = !user[key];
+    el.classList.toggle('on', user[key]);
+    saveUser();
+    if (key === 'stars') applyStarsToggle();
+    if (key === 'quotes') renderQuote();
+    if (key === 'dynamicTheme') {
+        if (!user.dynamicTheme) applyTheme(user.theme);
+        else if (currentWeatherKind) applyDynamicTheme(currentWeatherKind.kind, currentWeatherKind.isDay);
+    }
+}
+function toggleUnit(el) {
+    user.unit = user.unit === 'c' ? 'f' : 'c';
+    el.classList.toggle('on', user.unit === 'f');
+    saveUser();
+    const sCity = localStorage.getItem('weather_city');
+    if (sCity) { try { const c = JSON.parse(sCity); if (c.latitude) fetchWeather(c.name, c); else fetchWeather(sCity); } catch(e){ fetchWeather(sCity); } }
+}
+function saveSettings() {
+    const n = document.getElementById('settings-name').value.trim();
+    if (n) user.name = n;
+    saveUser();
+    applyTheme(user.theme);
+    updateGreeting();
+    toast('Settings saved ✓', 'success');
+}
+
+/* ---------- Custom theme ---------- */
+function generateCustomTheme() {
+    const c1 = document.getElementById('picker-color-1').value;
+    const c2 = document.getElementById('picker-color-2').value;
+    const c3 = document.getElementById('picker-color-3').value;
+    const code = `${c1},${c2},${c3}`;
+    themes['custom'] = { name: 'Custom', colors: [c1, c2, c3] };
+    user.theme = 'custom'; applyTheme('custom');
+    localStorage.setItem('weather_custom_theme', code); saveUser();
+    loadSettingsViewUI();
+    copyText(code)
+      .then(() => toast('Theme code copied 🎨 ' + code, 'success'))
+      .catch(() => { document.getElementById('import-theme-input').value = code; toast('Copy blocked — code shown in Import box', 'info'); });
+}
+function importCustomTheme() {
+    const code = document.getElementById('import-theme-input').value.trim();
+    if (!/^#([0-9a-fA-F]{3,6}),#([0-9a-fA-F]{3,6}),#([0-9a-fA-F]{3,6})$/.test(code)) return toast('Invalid theme code', 'error');
+    const colors = code.split(',');
+    themes['custom'] = { name: 'Custom', colors };
+    user.theme = 'custom'; applyTheme('custom');
+    localStorage.setItem('weather_custom_theme', code); saveUser();
+    loadSettingsViewUI();
+    toast('Theme imported ✓', 'success');
+}
+
+/* ---------- Weather ---------- */
+async function fetchWeather(city, coords = null) {
+    document.getElementById('loader').style.display = 'flex';
+    try {
+        let latitude, longitude, name;
+        if (coords) {
+            latitude = coords.latitude; longitude = coords.longitude; name = city;
+            localStorage.setItem('weather_city', JSON.stringify({ name, latitude, longitude }));
+        } else {
+            const geo = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1&language=en&format=json`).then(r=>r.json());
+            if (!geo.results?.length) throw new Error("City not found");
+            latitude = geo.results[0].latitude; longitude = geo.results[0].longitude; name = geo.results[0].name;
+            localStorage.setItem('weather_city', JSON.stringify({ name, latitude, longitude }));
+        }
+        const unit = user.unit === 'f' ? 'fahrenheit' : 'celsius';
+        const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true&temperature_unit=${unit}&hourly=temperature_2m,weathercode,relative_humidity_2m,apparent_temperature&daily=temperature_2m_max,temperature_2m_min,weathercode,sunrise,sunset,uv_index_max&timezone=auto`;
+        const aqiUrl = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${latitude}&longitude=${longitude}&current=us_aqi`;
+        const [weatherData, aqiData] = await Promise.all([
+            fetch(weatherUrl).then(r=>r.json()),
+            fetch(aqiUrl).then(r=>r.json()).catch(()=>null)
+        ]);
+        updateUI(weatherData, aqiData, name);
+        document.getElementById('landing-page').style.display = 'none';
+        document.getElementById('app-nav').style.display = 'flex';
+        switchView('weather');
+    } catch(e) {
+        toast(e.message || 'Failed to load weather', 'error');
+    } finally {
+        document.getElementById('loader').style.display = 'none';
+    }
+}
+
+function updateGreeting() {
+    const hour = new Date().getHours();
+    let greeting = "Good Day", emoji = "✨";
+    if (hour >= 5 && hour < 12) { greeting = "Good Morning"; emoji = "🌅"; }
+    else if (hour >= 12 && hour < 17) { greeting = "Good Afternoon"; emoji = "🌞"; }
+    else if (hour >= 17 && hour < 22) { greeting = "Good Evening"; emoji = "🌆"; }
+    else { greeting = "Good Night"; emoji = "🌙"; }
+    document.getElementById('greeting-title').innerText = `${greeting}, ${user.name || 'Friend'}!`;
+    const emojiEl = document.getElementById('status-emoji'); if (emojiEl) emojiEl.innerText = emoji;
+}
+
+function updateUI(data, aqiData, name) {
+    const cur = data.current_weather;
+    const day = data.daily;
+    const wInfo = weatherCodes[cur.weathercode] || weatherCodes[0];
+    const currentHour = new Date().getHours();
+    const isDay = cur.is_day !== undefined ? !!cur.is_day : (currentHour >= 6 && currentHour < 20);
+    currentWeatherKind = { kind: wInfo.kind, isDay };
+    applyDynamicTheme(wInfo.kind, isDay);
+
+    const unitSym = user.unit === 'f' ? '°F' : '°';
+    document.getElementById('city-name').innerText = name;
+    document.getElementById('date-display').innerText = new Date().toLocaleDateString('en-US', {weekday:'long', day:'numeric', month:'short'});
+    document.getElementById('current-temp').innerHTML = `${Math.round(cur.temperature)}<span>${unitSym}</span>`;
+    document.getElementById('weather-desc').innerText = wInfo.desc + '  ' + wInfo.emoji;
+    document.getElementById('main-icon').className = `fas ${wInfo.icon} weather-icon`;
+    document.getElementById('wind-speed').innerText = Math.round(cur.windspeed) + ' km/h';
+    const hourlyHumidity = data.hourly.relative_humidity_2m || data.hourly.relativehumidity_2m;
+    document.getElementById('humidity').innerText = `${hourlyHumidity ? hourlyHumidity[currentHour] : 50}%`;
+    const uvVal = day.uv_index_max ? Math.round(day.uv_index_max[0]) : 0;
+    document.getElementById('uv-index').innerText = uvVal || '-';
+    if (day.sunset?.[0]) {
+        const sunset = new Date(day.sunset[0]);
+        document.getElementById('sunset-time').innerText = `${sunset.getHours()}:${String(sunset.getMinutes()).padStart(2,'0')}`;
+    }
+    const apparent = data.hourly.apparent_temperature ? Math.round(data.hourly.apparent_temperature[currentHour]) : null;
+    document.getElementById('feels-like').innerText = apparent !== null ? `Feels like ${apparent}${unitSym}` : '';
+
+    updateGreeting();
+
+    // Status message
+    let msg = `Have an awesome day, ${user.name}!`;
+    if (wInfo.kind === 'rain') msg = `Grab your umbrella, ${user.name} ☔`;
+    else if (wInfo.kind === 'snow') msg = `Snow day! Stay warm out there ❄️`;
+    else if (wInfo.kind === 'storm') msg = `Storm alert — stay indoors if you can ⛈️`;
+    else if (cur.temperature < 5 && user.unit==='c') msg = `Bundle up — it's chilly! ❄️`;
+    else if ((user.unit==='c' && cur.temperature > 30) || (user.unit==='f' && cur.temperature>86)) msg = `Hot day — hydrate often, ${user.name} 🥤`;
+    document.getElementById('status-message').innerText = msg;
+
+    // Tips
+    const tips = document.getElementById('assistant-tips');
+    tips.innerHTML = '';
+    const cTemp = user.unit === 'f' ? (cur.temperature - 32) * 5/9 : cur.temperature;
+    let clothing = cTemp < 12 ? "🧥 Wear a thick jacket." : (cTemp < 20 ? "🧥 A light jacket is perfect." : "👕 Light clothing is ideal.");
+    tips.innerHTML += `<div class="assistant-item">${clothing}</div>`;
+    if (uvVal >= 3) tips.innerHTML += `<div class="assistant-item">🧴 Sunscreen recommended (UV: ${uvVal}).</div>`;
+    if (aqiData?.current) {
+        const aqi = aqiData.current.us_aqi;
+        const status = aqi > 100 ? "🛑 Unhealthy Air" : (aqi > 50 ? "⚠️ Moderate Air" : "🍃 Good Air Quality");
+        tips.innerHTML += `<div class="assistant-item">${status} (AQI: ${aqi})</div>`;
+    }
+    if (wInfo.kind === 'clear' && isDay) tips.innerHTML += `<div class="assistant-item">🌞 A great day for a walk.</div>`;
+
+    // Particles
+    handleParticles(wInfo.kind === 'rain' ? 'rain' : (wInfo.kind === 'snow' ? 'snow' : 'clear'));
+
+    // Hourly (next 24h, step 2h) — proper array-length safe
+    const hList = document.getElementById('hourly-list'); hList.innerHTML = '';
+    const times = data.hourly.time || [];
+    const nowIdx = times.findIndex(t => new Date(t).getHours() === currentHour && new Date(t).getDate() === new Date().getDate());
+    const startIdx = nowIdx >= 0 ? nowIdx : currentHour;
+    for (let offset = 0; offset < 24; offset += 2) {
+        const idx = startIdx + offset;
+        if (idx >= data.hourly.temperature_2m.length) break;
+        const temp = Math.round(data.hourly.temperature_2m[idx]);
+        const code = data.hourly.weathercode ? data.hourly.weathercode[idx] : 0;
+        const info = weatherCodes[code] || weatherCodes[0];
+        const dt = new Date(times[idx] || Date.now() + offset*3600*1000);
+        const timeStr = String(dt.getHours()).padStart(2, '0') + ':00';
+        hList.innerHTML += `<div class="hourly-card"><div class="hourly-time">${timeStr}</div><i class="fas ${info.icon} hourly-icon"></i><div class="hourly-temp">${temp}${unitSym}</div></div>`;
+    }
+
+    // Daily — fixed bar calc using min/max range across all days
+    const dList = document.getElementById('daily-list'); dList.innerHTML = '';
+    const maxes = day.temperature_2m_max, mins = day.temperature_2m_min;
+    const gmax = Math.max(...maxes), gmin = Math.min(...mins);
+    const range = Math.max(1, gmax - gmin);
+    for (let i = 1; i < Math.min(7, maxes.length); i++) {
+        const max = Math.round(maxes[i]), min = Math.round(mins[i]);
+        const startPct = ((min - gmin) / range) * 100;
+        const widthPct = ((max - min) / range) * 100;
+        const dName = new Date(new Date().setDate(new Date().getDate() + i)).toLocaleDateString('en-US', {weekday:'short'});
+        const info = weatherCodes[day.weathercode[i]] || weatherCodes[0];
+        dList.innerHTML += `<div class="daily-item"><span class="daily-day">${dName}</span><div class="daily-icon-wrapper"><i class="fas ${info.icon}"></i></div><div class="temp-bar-bg"><div class="temp-bar-fill" style="left:${startPct}%; width:${Math.max(widthPct,4)}%"></div></div><span class="daily-temps">${max}${unitSym} <small>${min}${unitSym}</small></span></div>`;
+    }
+}
+
+/* ---------- Timer ---------- */
+let timerInterval = null, timerSeconds = 1500, timerTotal = 1500, timerRunning = false, timerMode = 'work';
+let focusAudioSound = 'lofi', soundMuted = false;
+
+function loadFocusAudio() { const s = localStorage.getItem('focus_sound_pref'); if (s) focusAudioSound = s; }
+
+function updateFocusSoundPref(val) {
+    focusAudioSound = val;
+    localStorage.setItem('focus_sound_pref', val);
+    document.getElementById('lofi-warning-notice').style.display = (val && val !== 'none') ? 'block' : 'none';
+    if (timerRunning) { stopAmbientNoise(); startAmbientNoise(); }
+}
+
+function setTimerDuration(mins, mode) {
+    clearInterval(timerInterval); timerRunning = false; timerMode = mode;
+    timerTotal = mins * 60; timerSeconds = timerTotal;
+    updateTimerDisplay();
+    document.getElementById('timer-toggle-btn').innerHTML = '<i class="fas fa-play"></i> Start';
+    document.body.classList.remove('focus-active'); stopAmbientNoise();
+    document.querySelectorAll('.timer-preset').forEach(b => b.classList.remove('active-preset'));
+    document.getElementById(`preset-${mode}`)?.classList.add('active-preset');
+    document.getElementById('timer-label').innerText = mode === 'work' ? "Work Session" : (mode === 'short' ? "Short Break" : (mode === 'long' ? "Long Break" : "Custom"));
+    if (mode !== 'custom') document.getElementById('custom-minutes-input').value = mins;
+}
+
+// Debounced custom timer so typing doesn't reset every keystroke
+let customDebounce = null;
+document.addEventListener('DOMContentLoaded', () => {
+    const el = document.getElementById('custom-minutes-input');
+    if (el) el.addEventListener('input', (e) => {
+        clearTimeout(customDebounce);
+        customDebounce = setTimeout(() => {
+            const v = parseInt(e.target.value, 10);
+            if (!isNaN(v) && v > 0 && v <= 180) setTimerDuration(v, 'custom');
+        }, 600);
+    });
+});
+
+function toggleTimer() {
+    if (timerRunning) {
+        clearInterval(timerInterval); timerRunning = false;
+        document.getElementById('timer-toggle-btn').innerHTML = '<i class="fas fa-play"></i> Start';
+        document.body.classList.remove('focus-active'); stopAmbientNoise();
+    } else {
+        timerRunning = true;
+        document.getElementById('timer-toggle-btn').innerHTML = '<i class="fas fa-pause"></i> Pause';
+        document.body.classList.add('focus-active'); startAmbientNoise();
+        timerInterval = setInterval(() => {
+            if (timerSeconds > 0) { timerSeconds--; updateTimerDisplay(); }
+            else {
+                clearInterval(timerInterval); timerRunning = false;
+                document.getElementById('timer-toggle-btn').innerHTML = '<i class="fas fa-play"></i> Start';
+                document.body.classList.remove('focus-active'); stopAmbientNoise();
+                if (timerMode === 'work' || timerMode === 'custom') {
+                    sessionCount++;
+                    localStorage.setItem('climind_sessions_' + todayKey(), String(sessionCount));
+                    renderSessionDots();
+                    confetti();
+                    toast('Session complete — time for a break! ☕', 'success');
+                } else {
+                    toast('Break over — back to focus! 🎯', 'info');
+                }
+                playChimeSound();
+            }
+        }, 1000);
+    }
+}
+
+function resetTimer() {
+    clearInterval(timerInterval); timerRunning = false;
+    timerSeconds = timerTotal;
+    updateTimerDisplay();
+    document.getElementById('timer-toggle-btn').innerHTML = '<i class="fas fa-play"></i> Start';
+    document.body.classList.remove('focus-active'); stopAmbientNoise();
+}
+
+function updateTimerDisplay() {
+    const m = Math.floor(timerSeconds / 60), s = timerSeconds % 60;
+    document.getElementById('timer-display').innerText = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    // Progress ring
+    const ring = document.getElementById('ring-fg');
+    if (ring) {
+        const circ = 2 * Math.PI * 46;
+        const pct = timerTotal > 0 ? (timerSeconds / timerTotal) : 0;
+        ring.setAttribute('stroke-dasharray', String(circ));
+        ring.setAttribute('stroke-dashoffset', String(circ * (1 - pct)));
+    }
+}
+
+function renderSessionDots() {
+    const wrap = document.getElementById('session-dots');
+    const cnt = document.getElementById('session-count');
+    if (!wrap) return;
+    wrap.innerHTML = '';
+    const total = Math.max(4, sessionCount);
+    for (let i = 0; i < total; i++) {
+        const d = document.createElement('span'); d.className = 'session-dot' + (i < sessionCount ? ' done' : '');
+        wrap.appendChild(d);
+    }
+    if (cnt) cnt.innerText = `${sessionCount} done`;
+}
+
+const RADIO_STATIONS = {
+    lofi: 'https://play.streamafrica.net/lofiradio',
+    groove: 'https://ice1.somafm.com/groovesalad-128-mp3',
+    deepspace: 'https://ice1.somafm.com/deepspaceone-128-mp3',
+    dronezone: 'https://ice1.somafm.com/dronezone-128-mp3',
+    fluid: 'https://ice1.somafm.com/fluid-128-mp3',
+};
+function startAmbientNoise() {
+    if (soundMuted || !timerRunning || focusAudioSound === 'none') return;
+    const audio = document.getElementById('focus-audio');
+    const url = RADIO_STATIONS[focusAudioSound] || RADIO_STATIONS.lofi;
+    if (audio.src !== url) audio.src = url;
+    audio.play().catch(() => {});
+}
+function stopAmbientNoise() { document.getElementById('focus-audio').pause(); }
+
+function toggleMute() {
+    soundMuted = !soundMuted;
+    document.getElementById('ambient-toggle').innerHTML = soundMuted ? '<i class="fas fa-volume-mute"></i>' : '<i class="fas fa-volume-up"></i>';
+    if (soundMuted) stopAmbientNoise(); else if (timerRunning) startAmbientNoise();
+}
+
+function playChimeSound() {
+    try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        [523.25, 659.25, 783.99].forEach((freq, idx) => {
+            const osc = ctx.createOscillator(), gain = ctx.createGain();
+            osc.connect(gain); gain.connect(ctx.destination);
+            const now = ctx.currentTime + (idx * 0.12);
+            osc.frequency.setValueAtTime(freq, now); gain.gain.setValueAtTime(0.12, now);
+            gain.gain.linearRampToValueAtTime(0.001, now + 0.32); osc.start(now); osc.stop(now + 0.35);
+        });
+    } catch(e) {}
+}
+
+/* ---------- Geo ---------- */
+function getLocation() {
+    if (!navigator.geolocation) return toast('Geolocation not supported', 'error');
+    document.getElementById('loader').style.display = 'flex';
+    navigator.geolocation.getCurrentPosition(async (pos) => {
+        const lat = pos.coords.latitude, lon = pos.coords.longitude;
+        try {
+            const rev = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`).then(r=>r.json());
+            fetchWeather(rev.city || rev.locality || "Current Location", { latitude: lat, longitude: lon });
+        } catch { fetchWeather("My Location", { latitude: lat, longitude: lon }); }
+    }, e => {
+        document.getElementById('loader').style.display='none';
+        toast(e.message || 'Location denied', 'error');
+    });
+}
+
+function handleStartEnter(e) { if (e.key === 'Enter') startApp(); }
+function handleModalEnter(e) { if (e.key === 'Enter') { fetchWeather(e.target.value); closeSearchModal(); } }
+function startApp() { const c = document.getElementById('start-input').value.trim(); if (c) fetchWeather(c); else toast('Type a city or use location', 'info'); }
+function openSearchModal(){ document.getElementById('search-modal').classList.add('active'); setTimeout(()=>document.getElementById('modal-input').focus(), 100); }
+function closeSearchModal(){ document.getElementById('search-modal').classList.remove('active'); }
+
+/* ---------- Particles ---------- */
+const canvas = document.getElementById('weather-canvas');
+const ctx = canvas.getContext('2d');
+let particles = [], animId;
+function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+
+function handleParticles(type) {
+    cancelAnimationFrame(animId); ctx.clearRect(0,0,canvas.width,canvas.height);
+    particles = []; canvas.style.display = (type === 'rain' || type === 'snow') ? 'block' : 'none';
+    if (canvas.style.display === 'none') return;
+    for (let i = 0; i < 90; i++) particles.push({
+        x: Math.random()*canvas.width, y: Math.random()*canvas.height,
+        speed: type==='rain'? Math.random()*15+10 : Math.random()*2+1,
+        len: type==='rain'? Math.random()*20+10 : Math.random()*4+2, type
+    });
+    loopParticles();
+}
+function loopParticles() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.strokeStyle = ctx.fillStyle = document.body.getAttribute('data-mode') === 'light' ? "rgba(0,0,0,0.35)" : "rgba(255,255,255,0.5)";
+    ctx.lineWidth = 1.2;
+    particles.forEach(p => {
+        ctx.beginPath();
+        if (p.type === 'rain') { ctx.moveTo(p.x, p.y); ctx.lineTo(p.x, p.y + p.len); ctx.stroke(); }
+        else { ctx.arc(p.x, p.y, p.len, 0, Math.PI*2); ctx.fill(); }
+        p.y += p.speed; if (p.y > canvas.height) p.y = -20;
+    });
+    animId = requestAnimationFrame(loopParticles);
+}
+
+/* ---------- Stars ---------- */
+const stars = document.getElementById('stars-canvas');
+const sctx = stars.getContext('2d');
+let starPts = [], starsAnim;
+function resizeStars(){ stars.width = window.innerWidth; stars.height = window.innerHeight; }
+function applyStarsToggle() {
+    if (user.stars) {
+        stars.style.display = 'block';
+        starPts = [];
+        for (let i=0;i<120;i++) starPts.push({
+            x: Math.random()*stars.width, y: Math.random()*stars.height,
+            r: Math.random()*1.4+0.3, tw: Math.random()*Math.PI*2
+        });
+        loopStars();
+    } else {
+        stars.style.display = 'none';
+        cancelAnimationFrame(starsAnim);
+    }
+}
+function loopStars(){
+    sctx.clearRect(0,0,stars.width,stars.height);
+    var isLight = document.body.getAttribute('data-mode') === 'light';
+    starPts.forEach(s => {
+        s.tw += 0.03;
+        const alpha = 0.4 + Math.abs(Math.sin(s.tw)) * 0.6;
+        sctx.beginPath();
+        if (isLight) {
+            // Daytime: darker, slightly larger stars with a soft glow so they show over bright backgrounds.
+            sctx.shadowColor = 'rgba(30, 50, 90, 0.55)';
+            sctx.shadowBlur = 6;
+            sctx.fillStyle = `rgba(20, 40, 80, ${Math.min(1, alpha * 0.9 + 0.15)})`;
+            sctx.arc(s.x, s.y, s.r * 1.6, 0, Math.PI*2); sctx.fill();
+        } else {
+            sctx.shadowBlur = 0;
+            sctx.fillStyle = `rgba(255,255,255,${alpha})`;
+            sctx.arc(s.x, s.y, s.r, 0, Math.PI*2); sctx.fill();
+        }
+    });
+    sctx.shadowBlur = 0;
+    starsAnim = requestAnimationFrame(loopStars);
+}
+
+
+/* ---------- Quotes ---------- */
+function renderQuote() {
+    const slot = document.getElementById('quote-slot');
+    if (!slot) return;
+    if (!user.quotes) { slot.innerHTML = ''; return; }
+    const idx = new Date().getDate() % QUOTES.length;
+    const q = QUOTES[idx];
+    slot.innerHTML = `<div class="quote-bar"><i class="fas fa-quote-left"></i><div class="quote-text">${escapeHtml(q.t)}<span class="quote-author">— ${escapeHtml(q.a)}</span></div><span class="quote-close" onclick="hideQuoteOnce()" title="Hide"><i class="fas fa-xmark"></i></span></div>`;
+}
+function hideQuoteOnce(){ document.getElementById('quote-slot').innerHTML = ''; }
+
+/* ---------- Toast ---------- */
+function toast(msg, kind='info') {
+    const stack = document.getElementById('toast-stack');
+    const el = document.createElement('div');
+    el.className = `toast ${kind}`;
+    const icon = kind==='success'?'✓':kind==='error'?'⚠':'✦';
+    el.innerHTML = `<span>${icon}</span><span>${escapeHtml(msg)}</span>`;
+    stack.appendChild(el);
+    setTimeout(() => { el.style.opacity='0'; el.style.transform='translateY(-10px)'; el.style.transition='.3s'; }, 2600);
+    setTimeout(() => el.remove(), 3000);
+}
+
+/* ---------- Confetti ---------- */
+function confetti() {
+    const colors = ['#4facfe', '#00f2fe', '#a18cd1', '#fbc2eb', '#84fab0'];
+    for (let i=0;i<40;i++) {
+        const el = document.createElement('div');
+        el.className = 'confetti';
+        el.style.left = Math.random()*100 + 'vw';
+        el.style.background = colors[i % colors.length];
+        el.style.animationDuration = (1.5 + Math.random()*2) + 's';
+        el.style.transform = `rotate(${Math.random()*360}deg)`;
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 3800);
+    }
+}
+
+/* ---------- Toolbox: open/close ---------- */
+function openTool(id) {
+    document.getElementById('tools-home').style.display = 'none';
+    document.querySelectorAll('.tool-panel').forEach(p => p.classList.remove('active'));
+    const p = document.getElementById('tool-' + id);
+    if (p) p.classList.add('active');
+    if (id === 'notes') renderNotes();
+    if (id === 'clock') renderClocks();
+    if (id === 'converter') initConverter();
+    if (id === 'calc') { calcExpr=''; calcRenderDisplay(); document.getElementById('calc-result').innerText='0'; }
+    if (id === 'planner') initPlanner();
+}
+function closeTool() {
+    document.getElementById('tools-home').style.display = 'block';
+    document.querySelectorAll('.tool-panel').forEach(p => p.classList.remove('active'));
+}
+
+/* ---------- Notes ---------- */
+function loadNotes(){ try { return JSON.parse(localStorage.getItem('climind_notes')||'[]'); } catch(e){ return []; } }
+function saveNotes(n){ localStorage.setItem('climind_notes', JSON.stringify(n)); }
+function renderNotes() {
+    const list = loadNotes();
+    const wrap = document.getElementById('note-list');
+    document.getElementById('note-empty').style.display = list.length ? 'none' : 'block';
+    wrap.innerHTML = list.map((n,i) =>
+        `<div class="note-item ${n.done?'done':''}">
+            <div class="note-check ${n.done?'checked':''}" onclick="toggleNote(${i})">${n.done?'<i class="fas fa-check" style="font-size:12px"></i>':''}</div>
+            <div class="note-text">${escapeHtml(n.text)}</div>
+            <div class="note-del" onclick="delNote(${i})"><i class="fas fa-trash"></i></div>
+        </div>`).join('');
+}
+function addNote() {
+    const el = document.getElementById('note-input');
+    const t = el.value.trim(); if (!t) return;
+    const list = loadNotes(); list.unshift({ text: t, done: false }); saveNotes(list);
+    el.value = ''; renderNotes();
+}
+function toggleNote(i){ const l = loadNotes(); l[i].done = !l[i].done; saveNotes(l); renderNotes(); }
+function delNote(i){ const l = loadNotes(); l.splice(i,1); saveNotes(l); renderNotes(); }
+
+/* ---------- World Clock ---------- */
+function renderClocks(){
+    const list = document.getElementById('clock-list');
+    list.innerHTML = WORLD_CLOCKS.map(c =>
+        `<div class="clock-item"><div><div class="clock-city">${c.c}</div><div class="clock-tz">${c.tz}</div></div><div style="text-align:right"><div class="clock-time" data-tz="${c.tz}">--:--</div><div class="clock-date" data-tzd="${c.tz}">--</div></div></div>`
+    ).join('');
+    updateWorldClocks();
+}
+function updateWorldClocks(){
+    document.querySelectorAll('[data-tz]').forEach(el => {
+        const tz = el.getAttribute('data-tz');
+        try { el.innerText = new Date().toLocaleTimeString('en-US',{ timeZone: tz, hour:'2-digit', minute:'2-digit', hour12:false }); } catch(e){}
+    });
+    document.querySelectorAll('[data-tzd]').forEach(el => {
+        const tz = el.getAttribute('data-tzd');
+        try { el.innerText = new Date().toLocaleDateString('en-US',{ timeZone: tz, weekday:'short', month:'short', day:'numeric' }); } catch(e){}
+    });
+}
+
+/* ---------- Converter ---------- */
+function initConverter(){
+    populateConvUnits(); doConvert('from');
+}
+function setConvCategory(cat){
+    convCategory = cat;
+    document.querySelectorAll('.conv-tab').forEach(t => t.classList.toggle('active', t.dataset.cat === cat));
+    populateConvUnits();
+    doConvert('from');
+}
+function populateConvUnits(){
+    const units = Object.keys(UNITS[convCategory]);
+    const f = document.getElementById('conv-from-unit'); const t = document.getElementById('conv-to-unit');
+    f.innerHTML = units.map(u => `<option>${u}</option>`).join('');
+    t.innerHTML = units.map(u => `<option>${u}</option>`).join('');
+    if (units.length > 1) t.selectedIndex = 1;
+}
+function convertValue(val, from, to){
+    if (convCategory === 'temp') {
+        let c;
+        if (from==='C') c = val; else if (from==='F') c = (val-32)*5/9; else c = val - 273.15;
+        if (to==='C') return c; if (to==='F') return c*9/5+32; return c + 273.15;
+    }
+    const map = UNITS[convCategory];
+    return val * map[from] / map[to];
+}
+function doConvert(src){
+    const fu = document.getElementById('conv-from-unit').value;
+    const tu = document.getElementById('conv-to-unit').value;
+    if (src === 'from') {
+        const v = parseFloat(document.getElementById('conv-from-val').value) || 0;
+        document.getElementById('conv-to-val').value = round4(convertValue(v, fu, tu));
+    } else {
+        const v = parseFloat(document.getElementById('conv-to-val').value) || 0;
+        document.getElementById('conv-from-val').value = round4(convertValue(v, tu, fu));
+    }
+}
+function swapConv(){
+    const fu = document.getElementById('conv-from-unit'), tu = document.getElementById('conv-to-unit');
+    const t = fu.value; fu.value = tu.value; tu.value = t;
+    doConvert('from');
+}
+function round4(n){ return Math.round(n * 10000) / 10000; }
+
+/* ---------- Calculator ---------- */
+let calcExpr = '';
+function calcRenderDisplay(){ document.getElementById('calc-display').innerText = calcExpr || '0'; }
+function calcPush(t){
+  const last = calcExpr.slice(-1);
+  if('+-*/.%'.includes(t) && '+-*/.%'.includes(last)) calcExpr = calcExpr.slice(0,-1) + t;
+  else calcExpr += t;
+  calcRenderDisplay(); calcPreview();
+}
+function calcClear(){ calcExpr=''; calcRenderDisplay(); document.getElementById('calc-result').innerText='0'; }
+function calcBackspace(){ calcExpr = calcExpr.slice(0,-1); calcRenderDisplay(); calcPreview(); }
+function calcSanitize(s){ return s.replace(/×/g,'*').replace(/÷/g,'/').replace(/−/g,'-').replace(/%/g,'/100'); }
+function calcPreview(){
+  const raw = calcSanitize(calcExpr);
+  if(!raw || !/^[-+*/().\d\s]+$/.test(raw)){ document.getElementById('calc-result').innerText = calcExpr?'…':'0'; return; }
+  try{ const v = Function('"use strict";return ('+raw+')')();
+       document.getElementById('calc-result').innerText = Number.isFinite(v) ? String(Math.round(v*1e10)/1e10) : '…'; }
+  catch{ document.getElementById('calc-result').innerText='…'; }
+}
+function calcEval(){
+  const raw = calcSanitize(calcExpr);
+  if(!raw || !/^[-+*/().\d\s]+$/.test(raw)){ document.getElementById('calc-result').innerText='Invalid'; return; }
+  try{ const v = Function('"use strict";return ('+raw+')')();
+       const out = Number.isFinite(v) ? String(Math.round(v*1e10)/1e10) : 'Invalid';
+       document.getElementById('calc-result').innerText = out;
+       if(out!=='Invalid'){ calcExpr = out; calcRenderDisplay(); } }
+  catch{ document.getElementById('calc-result').innerText='Invalid'; }
+}
+
+/* ---------- Personalization Extras ---------- */
+function updateFontSize(v){
+  document.documentElement.style.setProperty('--app-font-scale', v);
+  localStorage.setItem('climind_font_scale', v);
+}
+function updateBgFx(v){
+  document.body.setAttribute('data-bgfx', v);
+  localStorage.setItem('climind_bgfx', v);
+}
+function getSavedCities(){ try{ return JSON.parse(localStorage.getItem('climind_cities')||'[]'); }catch(e){return [];} }
+function setSavedCities(list){ localStorage.setItem('climind_cities', JSON.stringify(list)); renderSavedCities(); }
+function addSavedCity(){
+  const inp = document.getElementById('new-city-input');
+  const name = inp.value.trim(); if(!name) return;
+  const list = getSavedCities();
+  if(!list.find(c=>c.toLowerCase()===name.toLowerCase())){ list.push(name); setSavedCities(list); }
+  inp.value=''; toast('City added','success');
+}
+function removeSavedCity(name){ setSavedCities(getSavedCities().filter(c=>c!==name)); }
+function selectSavedCity(name){ fetchWeather(name); switchView('weather'); }
+function renderSavedCities(){
+  const el = document.getElementById('saved-cities-list'); if(!el) return;
+  const list = getSavedCities();
+  el.innerHTML = list.length ? list.map(c=>`<span class="saved-city-chip" onclick="selectSavedCity('${c.replace(/'/g,"\\'")}')">${c}<span class="x" onclick="event.stopPropagation();removeSavedCity('${c.replace(/'/g,"\\'")}')">×</span></span>`).join('') : '<div style="font-size:0.75rem; opacity:0.6">No cities saved yet.</div>';
+}
+window.addEventListener('load', function(){
+  const fs = localStorage.getItem('climind_font_scale');
+  if(fs){ document.documentElement.style.setProperty('--app-font-scale', fs); const s=document.getElementById('settings-font-size'); if(s) s.value=fs; }
+  const fx = localStorage.getItem('climind_bgfx') || 'blobs';
+  updateBgFx(fx);
+  const b=document.getElementById('settings-bgfx'); if(b) b.value=fx;
+});
+const _origLoadSettingsViewUI = loadSettingsViewUI;
+loadSettingsViewUI = function(){
+  _origLoadSettingsViewUI();
+  const fs = localStorage.getItem('climind_font_scale')||'1';
+  const fx = localStorage.getItem('climind_bgfx')||'blobs';
+  const a=document.getElementById('settings-font-size'); if(a) a.value=fs;
+  const c=document.getElementById('settings-bgfx'); if(c) c.value=fx;
+  renderSavedCities();
+};
+
+/* ---------- Copy helper (iframe-safe) ---------- */
+function copyText(text){
+  return new Promise((resolve, reject) => {
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(resolve).catch(()=>fallback());
+      } else fallback();
+    } catch { fallback(); }
+    function fallback(){
+      try {
+        const ta = document.createElement('textarea');
+        ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
+        document.body.appendChild(ta); ta.focus(); ta.select();
+        const ok = document.execCommand('copy');
+        document.body.removeChild(ta);
+        ok ? resolve() : reject();
+      } catch(e){ reject(e); }
+    }
+  });
+}
+
+/* ---------- Planner & Reminders ---------- */
+const PLANNER_CATEGORIES = {
+  study:   { label:'Study',   icon:'fa-book',        color:'#4facfe' },
+  focus:   { label:'Focus',   icon:'fa-bullseye',    color:'#a18cd1' },
+  travel:  { label:'Travel',  icon:'fa-plane',       color:'#43cea2' },
+  sleep:   { label:'Sleep',   icon:'fa-moon',        color:'#6a11cb' },
+  workout: { label:'Workout', icon:'fa-dumbbell',    color:'#ff6a6a' },
+  other:   { label:'Other',   icon:'fa-star',        color:'#f6d365' }
+};
+const PLANNER_SUGGESTIONS = {
+  study:  ['Try 25-min Pomodoro focus sessions', 'Review notes before bed for better retention', 'Silence notifications during study blocks'],
+  focus:  ['Warm up with a 2-min deep breath', 'Keep water on your desk', 'Play Groove Salad for flow state'],
+  travel: ['Check the weather in your destination', 'Charge devices the night before', 'Save your trip city under Cities'],
+  sleep:  ['Aim for 7–9 hours', 'Dim screens 30 min before bed', 'Try SomaFM · Sleep as ambience'],
+  workout:['Warm up 5 min first', 'Hydrate before & after', 'Track your streak in Notes'],
+  other:  ['Add a reminder time to keep it top of mind']
+};
+let plannerView = new Date(); plannerView.setDate(1);
+let plannerSelected = todayKey();
+function todayKey(){ const d=new Date(); return d.toISOString().slice(0,10); }
+function loadPlannerEvents(){ try{ return JSON.parse(localStorage.getItem('climind_planner')||'{}'); }catch(e){return {};} }
+function savePlannerEvents(m){ localStorage.setItem('climind_planner', JSON.stringify(m)); }
+function initPlanner(){
+  plannerView = new Date(); plannerView.setDate(1);
+  plannerSelected = todayKey();
+  renderPlannerCalendar();
+  renderPlannerDay();
+}
+function plannerMonth(delta){
+  plannerView.setMonth(plannerView.getMonth()+delta);
+  renderPlannerCalendar();
+}
+function renderPlannerCalendar(){
+  const y = plannerView.getFullYear(), m = plannerView.getMonth();
+  document.getElementById('planner-month-label').innerText =
+    plannerView.toLocaleDateString('en-US',{month:'long', year:'numeric'});
+  const first = new Date(y,m,1).getDay();
+  const daysInMonth = new Date(y,m+1,0).getDate();
+  const events = loadPlannerEvents();
+  const today = todayKey();
+  const grid = document.getElementById('planner-cal-grid');
+  let html = '';
+  for(let i=0;i<first;i++) html += '<div class="cal-cell empty"></div>';
+  for(let d=1; d<=daysInMonth; d++){
+    const key = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const has = (events[key]||[]).length>0;
+    const cls = ['cal-cell'];
+    if(key===today) cls.push('today');
+    if(key===plannerSelected) cls.push('sel');
+    if(has) cls.push('has');
+    html += `<div class="${cls.join(' ')}" onclick="plannerSelect('${key}')">${d}${has?'<span class="dot"></span>':''}</div>`;
+  }
+  grid.innerHTML = html;
+}
+function plannerSelect(key){ plannerSelected = key; renderPlannerCalendar(); renderPlannerDay(); }
+function renderPlannerDay(){
+  const events = (loadPlannerEvents()[plannerSelected]||[]).slice().sort((a,b)=>(a.time||'').localeCompare(b.time||''));
+  const label = new Date(plannerSelected+'T00:00').toLocaleDateString('en-US',{weekday:'long', month:'short', day:'numeric'});
+  document.getElementById('planner-day-label').innerText = label;
+  const wrap = document.getElementById('planner-events-list');
+  if(!events.length){
+    wrap.innerHTML = '<div style="font-size:0.8rem; opacity:0.6; text-align:center; padding:10px 0;">No plans yet. Tap + to add one.</div>';
+  } else {
+    wrap.innerHTML = events.map((e,i)=>{
+      const c = PLANNER_CATEGORIES[e.cat] || PLANNER_CATEGORIES.other;
+      return `<div class="planner-event">
+        <div class="pe-icon" style="background:${c.color}"><i class="fas ${c.icon}"></i></div>
+        <div class="pe-body">
+          <div class="pe-title">${escapeHtml(e.title)}</div>
+          <div class="pe-meta">${c.label}${e.time?' · '+e.time:''}</div>
+        </div>
+        <div class="pe-del" onclick="delPlannerEvent(${i})"><i class="fas fa-trash"></i></div>
+      </div>`;
+    }).join('');
+  }
+  // Suggestions from most common categories
+  const all = Object.values(loadPlannerEvents()).flat();
+  const counts = {}; all.forEach(e=>{ counts[e.cat]=(counts[e.cat]||0)+1; });
+  const topCats = Object.keys(counts).sort((a,b)=>counts[b]-counts[a]).slice(0,2);
+  const cats = topCats.length ? topCats : ['study','sleep'];
+  const tips = cats.flatMap(c => (PLANNER_SUGGESTIONS[c]||[]).slice(0,1));
+  document.getElementById('planner-suggestions').innerHTML =
+    '<div style="font-size:0.72rem; opacity:0.7; font-weight:800; margin-bottom:6px;">SUGGESTIONS FOR YOU</div>' +
+    tips.map(t=>`<div class="suggestion-chip">💡 ${escapeHtml(t)}</div>`).join('');
+}
+function openPlannerAdd(){
+  document.getElementById('planner-add-modal').classList.add('active');
+  document.getElementById('pa-date').value = plannerSelected;
+  document.getElementById('pa-title').value = '';
+  document.getElementById('pa-time').value = '';
+  document.getElementById('pa-cat').value = 'study';
+  setTimeout(()=>document.getElementById('pa-title').focus(),100);
+}
+function closePlannerAdd(){ document.getElementById('planner-add-modal').classList.remove('active'); }
+function submitPlannerAdd(){
+  const title = document.getElementById('pa-title').value.trim();
+  const date = document.getElementById('pa-date').value || plannerSelected;
+  const time = document.getElementById('pa-time').value || '';
+  const cat = document.getElementById('pa-cat').value || 'other';
+  if(!title) return toast('Enter a title','error');
+  const map = loadPlannerEvents();
+  (map[date] = map[date] || []).push({ title, time, cat });
+  savePlannerEvents(map);
+  plannerSelected = date;
+  closePlannerAdd();
+  renderPlannerCalendar(); renderPlannerDay();
+  toast('Plan added ✓','success');
+}
+function delPlannerEvent(i){
+  const map = loadPlannerEvents();
+  if(map[plannerSelected]){ map[plannerSelected].splice(i,1);
+    if(!map[plannerSelected].length) delete map[plannerSelected];
+    savePlannerEvents(map); renderPlannerCalendar(); renderPlannerDay();
+  }
+}
+
+/* ---------- About modal ---------- */
+const GITHUB_USER = 'Erfan-8910';
+let aboutLoaded = false;
+function openAboutModal(){
+  document.getElementById('about-modal').classList.add('active');
+  if(aboutLoaded) return;
+  fetch(`https://api.github.com/users/${GITHUB_USER}`)
+    .then(r=>r.ok?r.json():Promise.reject())
+    .then(u=>{
+      document.getElementById('about-avatar').src = u.avatar_url;
+      document.getElementById('about-name').innerText = u.name || u.login;
+      document.getElementById('about-login').innerText = '@' + u.login;
+      document.getElementById('about-bio').innerText = u.bio || 'Developer & designer of Climind.';
+      document.getElementById('about-stats').innerHTML = `
+        <div><b>${u.public_repos}</b><small>Repos</small></div>
+        <div><b>${u.followers}</b><small>Followers</small></div>
+        <div><b>${u.following}</b><small>Following</small></div>`;
+      document.getElementById('about-link').href = u.html_url;
+      aboutLoaded = true;
+    })
+    .catch(()=>{
+      document.getElementById('about-bio').innerText = 'Could not load GitHub profile. Tap the link to visit it directly.';
+    });
+}
+function closeAboutModal(){ document.getElementById('about-modal').classList.remove('active'); }
+
+
+</script>
+</body>
+</html>
